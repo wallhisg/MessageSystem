@@ -8,7 +8,7 @@ parserArgumentsC=-ferror-limit=100 -fspell-checking -Wdocumentation -Wunused-par
 Name=GCC
 
 [CustomDefinesAndIncludes][ProjectPath0][Includes]
-1=/home/wall/projects/MessageSystem/MessageSystem/include
+1=/home/wall/Dropbox/projects/MessageSystem/MessageSystem/include
 
 [Filters]
 size=40
@@ -214,12 +214,12 @@ pattern=.hg
 targets=2
 
 [Launch]
-Launch Configurations=Launch Configuration 0
+Launch Configurations=Launch Configuration 0,Launch Configuration 1
 
 [Launch][Launch Configuration 0]
 Configured Launch Modes=execute
 Configured Launchers=nativeAppLauncher
-Name=New Compiled Binary Launcher
+Name=run
 Type=Native Application
 
 [Launch][Launch Configuration 0][Data]
@@ -227,11 +227,29 @@ Arguments=
 Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
 Dependency Action=Nothing
 EnvironmentGroup=
-Executable=file:///home/wall/projects/MessageSystem/MessageSystem
+Executable=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
 External Terminal=make run
 Project Target=
 Use External Terminal=true
-Working Directory=file:///home/wall/projects/MessageSystem/MessageSystem
+Working Directory=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+isExecutable=true
+
+[Launch][Launch Configuration 1]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=TEST_MESSAGE_ENDPOINT
+Type=Native Application
+
+[Launch][Launch Configuration 1][Data]
+Arguments=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
+EnvironmentGroup=
+Executable=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+External Terminal=make TEST_MESSAGE_ENDPOINT
+Project Target=
+Use External Terminal=true
+Working Directory=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
 isExecutable=true
 
 [MakeBuilder]

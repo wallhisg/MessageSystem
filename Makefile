@@ -7,7 +7,7 @@ PROGRAMS	:=
 TESTS		:=
 #======================================================================
 # MODULES
-MODULES		:= src
+MODULES		:= src/Message	src/Driver
 # LIBS
 MODULES		+=
 # APP
@@ -41,22 +41,26 @@ include $(patsubst %, ./%/xmodule.mk, $(MODULES))
 include ./MessageSystem/xmodule.mk
 
 # Unit test
+include ./unitTest/TEST_MESSAGE/TEST_ENDPOINT/xmodule.mk
 
 #======================================================================
 .PHONY: default build run all clean
 
-all: $(OBJS) $(PROGRAMS)
+all: $(OBJS) $(PROGRAMS) $(TESTS)
 
 run: $(PROGRAMS)
 	@$<
 #======================================================================
 # unitTest
-test: $(TESTS)
+test: $(OBJS) $(TMPS) $(TESTS)
 
-
+TEST_MESSAGE_ENDPOINT:
+	@./unitTest/TEST_MESSAGE/TEST_ENDPOINT/TEST_MESSAGE_ENDPOINT
 
 #mem_program: $(PROGRAMS)
 #	valgrind --tool=memcheck --leak-check=full --undef-value-errors=no $(PROGRAMS)
 	
 clean:
 	$(RM) $(OBJS) $(DEPS) $(PROGRAMS) $(TMPS) $(TESTS)
+
+	
