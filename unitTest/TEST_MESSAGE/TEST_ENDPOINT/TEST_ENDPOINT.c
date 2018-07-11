@@ -1,14 +1,14 @@
 #include <stdio.h>
-#include <Message/Endpoint/Endpoint.h>
+#include <message/endpoint/endpoint.h>
 
 int main()
 {
     printf("----- TEST ENDPOINT -----\r\n");
     endpoint_init();
     
-    EndpointPtr ep = get_endpoint();
+    endpoint_ptr ep = get_endpoint();
     
-    AddressValue av;
+    address_value_t av;
     av.address = 12;
     av.value = 100;
     ep->gpio.addressValue = av;

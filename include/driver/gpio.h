@@ -1,12 +1,12 @@
 #ifndef GPIO_H
 #define GPIO_H
 
-#include <System/System.h>
+#include <system/system.h>
 
 typedef struct {
     uint8_t address;
     uint8_t value;
-} AddressValue, *AddressValuePtr;
+} address_value_t, *address_value_ptr;
 
 typedef struct {
     handle_event_func read;
@@ -16,12 +16,12 @@ typedef struct {
     handle_event_func clear;
     handle_event_func enable;
     handle_event_func disable;
-} GpioFunction;
+} gpio_function;
 
 typedef struct {
-    GpioFunction handleEvent;
-    AddressValue addressValue;
-} Gpio;
+    gpio_function handleEvent;
+    address_value_t addressValue;
+} gpio_t;
 
 void gpio_set_pin(void *instance);
 void gpio_clear_pin(void *instance);

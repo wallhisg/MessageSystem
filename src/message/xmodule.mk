@@ -1,5 +1,5 @@
 LOCAL_BASE	:= src
-LOCAL_MDLS	:= Driver Driver/Gpio
+LOCAL_MDLS	:= message message/endpoint message/channel
 LOCAL_BLDS	:= $(addprefix $(LOCAL_BASE)/, $(LOCAL_MDLS))
 LOCAL_INCS	:= $(wildcard $(INCLUDE_DIRS)/$(LOCAL_MDLS)/*.h)
 

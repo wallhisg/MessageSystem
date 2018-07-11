@@ -2,7 +2,8 @@
 #define SYSTEM_H
 
 #include <stdint.h>
-#include "Debug.h"
+#include <stdbool.h>
+#include "debug.h"
 
 typedef void* (*handle_event_func)(void *);
 

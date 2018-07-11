@@ -1,7 +1,7 @@
-#include <Message/Endpoint/Endpoint.h>
+#include <message/endpoint/endpoint.h>
 
 
-static Endpoint endpoint;
+static endpoint_t endpoint;
 
 void endpoint_init()
 {
@@ -14,7 +14,7 @@ void endpoint_init()
     
 }
 
-EndpointPtr get_endpoint()
+endpoint_ptr get_endpoint()
 {
     return &endpoint;
 }
