@@ -2,22 +2,19 @@
 #define ENDPOINT_H
 
 #include <system/system.h>
+#include <message/message.h>
 #include <driver/gpio.h>
 
-
-typedef enum {
-    UNDEFINE,
-    UART,
-    GPIO,
-    ADC
-} endpoint_type;
-
 typedef struct {
-    endpoint_type type;
-    gpio_t gpio;
-} endpoint_t, *endpoint_ptr;
+//     EndpointType type;
+    void* instance;
+} Endpoint, *EndpointPtr;
 
 void endpoint_init();
-endpoint_ptr get_endpoint();
+EndpointPtr get_endpoint();
+
+void create_gpio_message();
+void read_gpio_message();
+void write_gpio_message();
 
 #endif  //  ENDPOINT_H

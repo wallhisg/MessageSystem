@@ -3,13 +3,18 @@
 bool add_to_registry(ChannelPtr channel, EndpointType type, void *instance);
 bool remove_from_registry(ChannelPtr channel, EndpointType type, void *instance);
 
-void regist_message(EndpointType type, void *message)
+void router_init()
 {
-    ChannelPtr channel = get_channel(type);
+
+}
+
+void regist_message(MessageHandle handle, void *message)
+{
+    ChannelPtr channel = get_channel(handle.endpoint);
     
     if(channel != NULL)
     {
-        if(!add_to_registry(channel, type, message))
+        if(!add_to_registry(channel, handle.endpoint, message))
         {
             printf("No more registrations possible\r\n");
         }
@@ -20,28 +25,31 @@ bool add_to_registry(ChannelPtr channel, EndpointType type, void *instance)
 {
     MessagePtr message = channel->messages;
     bool isRegistered = false;
-    
+
     size_t i = 0;
-    for(i = 0; (i < channel->size) && isRegistered == false; ++i)
+    for(i = 0; (i < channel->size) && (isRegistered == false); ++i)
     {
+        printf("add_to_registry %u\r\n", i);
         if(!message[i].isUsed)
         {
+            printf("add_to_registry\r\n");
             MessagePtr freeEntry = &message[i];
             freeEntry->handle.endpoint = type;
             freeEntry->instance = instance;
+            isRegistered = freeEntry->isUsed = true;
         }
     }
     
     return isRegistered;
 }
 
-void unregist_message(EndpointType type, void *message)
+void unregist_message(MessageHandle handle, void *message)
 {
-    ChannelPtr channel = get_channel(type);
+    ChannelPtr channel = get_channel(handle.endpoint);
     
     if(channel != NULL)
     {
-        if(!remove_from_registry(channel, type, message))
+        if(!remove_from_registry(channel, handle.endpoint, message))
         {
             printf("Message not registered\r\n");
         }
@@ -65,3 +73,4 @@ bool remove_from_registry(ChannelPtr channel, EndpointType type, void *instance)
     
     return nodeRemoved;
 }
+

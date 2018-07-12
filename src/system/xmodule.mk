@@ -1,6 +1,5 @@
 LOCAL_BASE	:= src
-LOCAL_MDLS	:= message message/endpoint message/channel
-LOCAL_MDLS	+= message/router message/translator
+LOCAL_MDLS	:= system
 LOCAL_BLDS	:= $(addprefix $(LOCAL_BASE)/, $(LOCAL_MDLS))
 LOCAL_INCS	:= $(wildcard $(INCLUDE_DIRS)/$(LOCAL_MDLS)/*.h)
 

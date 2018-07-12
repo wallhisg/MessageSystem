@@ -5,6 +5,6 @@
 #include <stdbool.h>
 #include "debug.h"
 
-typedef void* (*handle_event_func)(void *);
+void system_init();
 
 #endif  //  SYSTEM_H
