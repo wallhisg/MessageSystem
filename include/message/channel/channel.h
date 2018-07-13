@@ -5,9 +5,11 @@
 #include <message/message.h>
 #include <message/endpoint/endpoint.h>
 
-#define MAX_NO_OF_GPIO_MESSAGE  4
 #define MAX_NO_OF_UART_MESSAGE  4
-#define MAX_NO_OF_ADC_MESSAGE   4
+#define MAX_NO_OF_SPI_MESSAGE   4
+#define MAX_NO_OF_I2C_MESSAGE   4
+
+
 
 typedef struct {
     MessagePtr messages;
@@ -16,7 +18,6 @@ typedef struct {
 
 void channel_init();
 ChannelPtr get_channel(EndpointType epType);
-ChannelPtr get_gpio_channel();
 
 int find_free_message_slot(Message message[], size_t size);
 

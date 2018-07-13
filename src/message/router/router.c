@@ -29,10 +29,8 @@ bool add_to_registry(ChannelPtr channel, EndpointType type, void *instance)
     size_t i = 0;
     for(i = 0; (i < channel->size) && (isRegistered == false); ++i)
     {
-        printf("add_to_registry %u\r\n", i);
         if(!message[i].isUsed)
         {
-            printf("add_to_registry\r\n");
             MessagePtr freeEntry = &message[i];
             freeEntry->handle.endpoint = type;
             freeEntry->instance = instance;

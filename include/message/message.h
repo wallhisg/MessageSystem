@@ -2,21 +2,7 @@
 #define MESSAGE_H
 
 #include <system/system.h>
-
-typedef enum {
-    ENDPOINT_UNDEFINE,
-    ENDPOINT_GPIO,
-    ENDPOINT_UART,
-    ENDPOINT_ADC
-} EndpointType;
-
-typedef enum {
-    NONE, ON, OFF,
-    START, STOP,
-    READ, WRITE,
-    SET, GET, CLEAR, TOGGLE,
-    ENABLE, DISABLE
-} EventType;
+#include <event/event.h>
 
 typedef enum {
     COMMAND,        //  LOCAL: Address - Value Pair
@@ -24,6 +10,13 @@ typedef enum {
     EVENT,          //  JSON
     REQUEST_REPLY   //  LOCAL & REMOTE: Json; Address - Value Pair
 } MessageType;
+
+typedef enum {
+    ENDPOINT_UNDEFINE,
+    UART_ENDPOINT,
+    SPI_ENDPOINT,
+    I2C_ENDPOINT
+} EndpointType;
 
 typedef enum {
     POINT_TO_POINT,
@@ -46,26 +39,17 @@ typedef struct {
     RoutingType router;
 } MessageHandle;
 
-typedef MessageHandle (*get_handle_func)(void * instance);
-
-typedef void* (*handle_event_func)(void *);
-typedef void (*on_event_closed_func)(void* closedEvent);
-
-typedef struct {
-    EventType event;
-    handle_event_func handleEvent;
-    on_event_closed_func onEventClose;
-} Event, *EventPtr;
-
 typedef struct {
     MessageHandle handle;
     void *instance;
     bool isUsed;
 } Message, *MessagePtr;
 
-MessageHandle get_handle(void *message);
+MessageHandle get_message_handle(void *message);
+
+
 void handle_message();
-void create_message(MessageHandle handle, handle_event_func handleEvent);
+void create_message();
 void destroy_message();
 
 #endif  //  MESSAGE_H

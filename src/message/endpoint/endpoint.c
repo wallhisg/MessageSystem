@@ -19,16 +19,6 @@ EndpointPtr get_endpoint()
     return &endpoint;
 }
 
-void create_gpio_message()
-{
-    MessageHandle message;
-    message.endpoint = ENDPOINT_GPIO;
-    message.type = COMMAND;
-    message.router = CONTENT_BASED_ROUTER;
-    message.channel = POINT_TO_POINT;
-
-    create_message(message, NULL);
-}
 
 void read_gpio_message()
 {

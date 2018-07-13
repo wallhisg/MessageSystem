@@ -13,3 +13,5 @@ include/driver
 include/system
 unitTest/TEST_MESSAGE/TEST_ENDPOINT
 src/system
+include/event
+src/event

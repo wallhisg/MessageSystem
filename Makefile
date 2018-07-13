@@ -7,7 +7,7 @@ PROGRAMS	:=
 TESTS		:=
 #======================================================================
 # MODULES
-MODULES		:= src/system src/message src/driver
+MODULES		:= src/system src/message src/event src/driver
 # LIBS
 MODULES		+=
 # APP

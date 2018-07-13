@@ -1,8 +1,10 @@
+include/event/event.h
+include/system/config.h
+src/event/event.c
 src/system/system.c
 unitTest/TEST_MESSAGE/TEST_ENDPOINT/TEST_ENDPOINT.c
 include/driver/gpio.h
 include/message/channel/channel.h
-include/message/channel/gpio_channel.h
 include/message/endpoint/endpoint.h
 include/message/message.h
 include/message/router/router.h
@@ -10,7 +12,6 @@ include/system/debug.h
 include/system/system.h
 src/driver/gpio.c
 src/message/channel/channel.c
-src/message/channel/gpio_channel.c
 src/message/endpoint/endpoint.c
 src/message/message.c
 src/message/router/router.c

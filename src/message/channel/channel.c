@@ -1,26 +1,26 @@
 #include <message/channel/channel.h>
 
-static Message GPIO_MESSAGES[MAX_NO_OF_GPIO_MESSAGE];
-static Channel gpioChannel;
-
 static Message UART_MESSAGES[MAX_NO_OF_UART_MESSAGE];
 static Channel uartChannel;
 
-static Message ADC_MESSAGES[MAX_NO_OF_ADC_MESSAGE];
-static Channel adcChannel;
+static Message SPI_MESSAGES[MAX_NO_OF_SPI_MESSAGE];
+static Channel spiChannel;
+
+static Message I2C_MESSAGES[MAX_NO_OF_I2C_MESSAGE];
+static Channel i2cChannel;
 
 bool is_message_empty(Message message);
 
 void channel_init()
 {
-    gpioChannel.messages = GPIO_MESSAGES;
-    gpioChannel.size = MAX_NO_OF_GPIO_MESSAGE;
-
     uartChannel.messages = UART_MESSAGES;
     uartChannel.size = MAX_NO_OF_UART_MESSAGE;
 
-    adcChannel.messages = ADC_MESSAGES;
-    adcChannel.size = MAX_NO_OF_ADC_MESSAGE;
+    spiChannel.messages = SPI_MESSAGES;
+    spiChannel.size = MAX_NO_OF_SPI_MESSAGE;
+
+    i2cChannel.messages = I2C_MESSAGES;
+    i2cChannel.size = MAX_NO_OF_I2C_MESSAGE;
 }
 
 ChannelPtr get_channel(EndpointType epType)
@@ -30,19 +30,19 @@ ChannelPtr get_channel(EndpointType epType)
     // Select channel
     switch (epType)
     {
-        case ENDPOINT_GPIO:
-        {
-            channel = &gpioChannel;
-            break;
-        }
-        case ENDPOINT_UART:
+        case UART_ENDPOINT:
         {
             channel = &uartChannel;
             break;
         }
-        case ENDPOINT_ADC:
+        case SPI_ENDPOINT:
         {
-            channel = &adcChannel;
+            channel = &spiChannel;
+            break;
+        }
+        case I2C_ENDPOINT:
+        {
+            channel = &i2cChannel;
             break;
         }
         default:
