@@ -1,7 +1,7 @@
 #include <message/router/router.h>
 
-bool add_to_registry(ChannelPtr channel, EndpointType type, void *instance);
-bool remove_from_registry(ChannelPtr channel, EndpointType type, void *instance);
+bool add_to_message_registry(ChannelPtr channel, EndpointType type, void *instance);
+bool remove_from_message_registry(ChannelPtr channel, EndpointType type, void *instance);
 
 void router_init()
 {
@@ -14,14 +14,14 @@ void regist_message(MessageHandle handle, void *message)
     
     if(channel != NULL)
     {
-        if(!add_to_registry(channel, handle.endpoint, message))
+        if(!add_to_message_registry(channel, handle.endpoint, message))
         {
             printf("No more registrations possible\r\n");
         }
     }
 }
 
-bool add_to_registry(ChannelPtr channel, EndpointType type, void *instance)
+bool add_to_message_registry(ChannelPtr channel, EndpointType type, void *instance)
 {
     MessagePtr message = channel->messages;
     bool isRegistered = false;
@@ -47,14 +47,14 @@ void unregist_message(MessageHandle handle, void *message)
     
     if(channel != NULL)
     {
-        if(!remove_from_registry(channel, handle.endpoint, message))
+        if(!remove_from_message_registry(channel, handle.endpoint, message))
         {
             printf("Message not registered\r\n");
         }
     }
 }
 
-bool remove_from_registry(ChannelPtr channel, EndpointType type, void *instance)
+bool remove_from_message_registry(ChannelPtr channel, EndpointType type, void *instance)
 {
     MessagePtr messages = channel->messages;
     bool nodeRemoved = false;

@@ -1,36 +1,29 @@
 #ifndef EVENT_H
 #define EVENT_H
 
+#include <stdbool.h>
 #include <system/system.h>
+#include <event/handle.h>
+#include <event/event_handler.h>
+#include <event/event_notifier.h>
 
-typedef enum {
-    EVENT_READ, EVENT_WRITE,
-    EVENT_SET, EVENT_GET, EVENT_CLEAR, EVENT_TOGGLE,
-    EVENT_ENABLE, EVENT_DISABLE
-} HandleEvent;
 
 typedef struct {
-    uint16_t preset;
-    uint16_t counter;
-} Timer;
+    Handle handle;
+    EventHandler eventHandler;
+    EventNotifier notifier;
+} Event, *EventPtr;
 
-typedef HandleEvent (*get_handle_func)(void * instance);
-typedef void* (*handle_event_func)(void *instance);
-
+// Define poll event file description
 typedef struct {
-    void* instance;
-    get_handle_func getHandle;
-    handle_event_func handleEvent;
-} EventHandler, *EventHandlerPtr;
+    uint16_t fd;             /* file descriptor */
+    uint8_t events;       /* requested events */
+    uint8_t revents;     /* returned events */
+} PollEventFd; 
 
-//typedef struct {
-//    HandleEvent handle;
-//    handle_event_func handleEvent;
-//    on_event_closed_func onEventClose;
-//    void *instance;
-//} Event, *EventPtr;
+Handle get_handle(void *instance);
 
-HandleEvent get_event_handle(void *event);
+void event_init();
 
 
 #endif // EVENT_H

@@ -1,8 +1,15 @@
 #include <event/event.h>
 
-HandleEvent get_event_handle(void *event)
-{
-    const EventPtr event_ = event;
 
-    return event_->eventHandle;
+
+void event_init()
+{
+    
+}
+
+Handle get_handle(void *instance)
+{
+    const EventPtr event_ = instance;
+
+    return event_->handle;
 }

@@ -7,6 +7,8 @@
 
 void system_init()
 {
+//     system_event_init();
+    
     endpoint_init();
     channel_init();
     router_init();

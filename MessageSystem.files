@@ -1,6 +1,8 @@
 include/event/event.h
+include/event/event_manager.h
 include/system/config.h
 src/event/event.c
+src/event/event_manager.c
 src/system/system.c
 unitTest/TEST_MESSAGE/TEST_ENDPOINT/TEST_ENDPOINT.c
 include/driver/gpio.h
