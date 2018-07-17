@@ -1,11 +1,15 @@
 #include <event/event.h>
 #include <event/reactor.h>
 
+
 static Event SYSTEM_EVENT[MAX_NO_OF_EVENTS];
+
+
 
 int find_free_event_slot();
 int find_matching_eventHandler_slot(const EventHandler *eventHandler);
 void on_closed_event(void *closedEvent);
+void *event_demultiplexer(void *instance);
 
 void event_init()
 {
@@ -30,7 +34,7 @@ void create_event(Handle handle)
         EventHandlerPtr eventHandler = &event->eventHandler;
         eventHandler->instance = event;
         eventHandler->getHandle = get_handle;
-
+        eventHandler->handleEvent = (void*)event_demultiplexer;
         event->notifier.events = &SYSTEM_EVENT;
         event->notifier.onEventClosed = on_closed_event;
 
@@ -114,4 +118,9 @@ int find_matching_eventHandler_slot(const EventHandler *eventHandler)
 Event *get_system_event(const int i)
 {
     return &SYSTEM_EVENT[i];
+}
+
+void *event_demultiplexer(void *instance)
+{
+    printf("event_demultiplexer\r\n");
 }

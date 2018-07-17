@@ -15,6 +15,11 @@
 #define REVENT_READ_GPIO        0x02
 #define REVENT_READ_ADC         0x03
 
+typedef enum {
+    POLLERR, POLLHUP,
+    POLLNVAL, POLLVAL,
+    POLLIN, POLLOUT
+} PollEvent;
 
 // Define event's file description
 typedef union {

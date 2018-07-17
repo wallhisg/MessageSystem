@@ -1,3 +1,4 @@
+Makefile
 include/event/error.h
 include/event/event.h
 include/event/event.h
@@ -7,6 +8,7 @@ include/event/event_notifier.h
 include/event/handle.h
 include/event/poll_reactor.h
 include/event/reactor.h
+include/event/reactor_event_loop.h
 include/system/config.h
 src/event/error.c
 src/event/event.c
@@ -14,6 +16,7 @@ src/event/event.c
 src/event/event_manager.c
 src/event/poll_reactor.c
 src/system/system.c
+unitTest/TEST_EVENT/TEST_HANDLE_EVENT/TEST_HANDLE_EVENT.c
 unitTest/TEST_EVENT/TEST_REACTOR/TEST_REACTOR.c
 unitTest/TEST_MESSAGE/TEST_ENDPOINT/TEST_ENDPOINT.c
 include/driver/gpio.h

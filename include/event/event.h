@@ -15,6 +15,7 @@ typedef struct {
     EventNotifier notifier;
 } Event, *EventPtr;
 
+
 void event_init();
 
 Handle get_handle(void *instance);
