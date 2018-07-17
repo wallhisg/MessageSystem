@@ -16,23 +16,17 @@
 
 #include <event/event_handler.h>
 
-#define MAX_NO_OF_HANDLER 8
+#define MAX_NO_OF_HANDLES 8
 
-
-// Define pool event
 typedef struct {
-    EventFd fd;
+    EventHandler *eventHandler;
     PollEvent poll;
     uint16_t timeOut;
-} PoolEvents;
-
-typedef struct {
     bool isUsed;
-    EventHandler* eventHandler;
-    PoolEvents poolEvent;
-} HandlerRegistration;
+} HandleRegistration;
 
 void regist_event(EventHandler* eventHandler);
 void unregist_event(EventHandler* eventHandler);
+void reload_event(EventHandler* eventHandler);
 
 #endif

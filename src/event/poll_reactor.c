@@ -1,17 +1,21 @@
+#include <system/system.h>
 #include <event/reactor.h>
 #include <event/event.h>
 #include <event/handle.h>
 #include <event/reactor_event_loop.h>
 
-static HandlerRegistration registerHandlers[MAX_NO_OF_HANDLER];
+static HandleRegistration registerHandles[MAX_NO_OF_HANDLES];
 
 bool add_to_registry(EventHandler* eventHandler);
 bool remove_from_registry(EventHandler* eventHandler);
-int build_event_pool(PoolEvents *poolEvents);
-void dispatch_signalled_events(PoolEvents *fds, const int noOfMessages);
+bool reload_from_registry(EventHandler* eventHandler);
+
+int build_eventHandler_pool(EventHandler *eventHandlerPool[]);
+void dispatch_signalled_events(EventHandler *eventHandlerPool[], const int noOfMessages);
 
 void regist_event(EventHandler* eventHandler)
 {
+    debug_message("regist_event");
     if(eventHandler != NULL)
     {
         if(!add_to_registry(eventHandler))
@@ -23,6 +27,7 @@ void regist_event(EventHandler* eventHandler)
 
 void unregist_event(EventHandler* eventHandler)
 {
+    debug_message("unregist_event");
     if(eventHandler != NULL)
     {
         if(!remove_from_registry(eventHandler))
@@ -32,25 +37,29 @@ void unregist_event(EventHandler* eventHandler)
     }
 }
 
+void reload_event(EventHandler* eventHandler)
+{
+    debug_message("reload_event");
+    if(eventHandler != NULL)
+    {
+        if(!reload_from_registry(eventHandler))
+        {
+            error("Event handler not reloaded");
+        }
+    }
+}
 void handle_events(void)
 {
-    PoolEvents poolEvents[MAX_NO_OF_HANDLER] = {0};
+    EventHandler *eventHandlerPool[MAX_NO_OF_HANDLES];
 
-    const int noOfHandles = build_event_pool(poolEvents);
+    const int noOfHandles = build_eventHandler_pool(eventHandlerPool);
+    
     printf("noOfHandles %d\r\n", noOfHandles);
-    int i = 0;
-    for(i = 0; i < noOfHandles; ++i)
-    {
-        printf("poolEvents[%d].timeOut %d\r\n", i, poolEvents[i].timeOut);
-    }
- 
     
     if(noOfHandles > 0)
     {
-        dispatch_signalled_events(poolEvents, noOfHandles);
+        dispatch_signalled_events(eventHandlerPool, noOfHandles);
     }
-
-
 }
 
 bool add_to_registry(EventHandler* eventHandler)
@@ -58,17 +67,16 @@ bool add_to_registry(EventHandler* eventHandler)
     bool isRegistered = false;
     
     int i = 0;
-    for(i = 0; (i < MAX_NO_OF_HANDLER) && (isRegistered == false); ++i)
+    for(i = 0; (i < MAX_NO_OF_HANDLES) && (isRegistered == false); ++i)
     {
-        if(registerHandlers[i].isUsed == false)
+        if(registerHandles[i].isUsed == false)
         {
             Handle handle = get_handle(eventHandler->instance);
             
-            HandlerRegistration* freeEntry = &registerHandlers[i];
+            HandleRegistration* freeEntry = &registerHandles[i];
             freeEntry->eventHandler= eventHandler;
-            freeEntry->poolEvent.fd = handle.fd;
-            freeEntry->poolEvent.timeOut = handle.timerPreset;
-            
+            freeEntry->timeOut = handle.timerPreset;
+            freeEntry->poll = POLLHUP;
             freeEntry->isUsed = isRegistered = true;
             debug("Reactor: Added eventHandler with ID = %d\n", handle.fd.id);
         }
@@ -82,12 +90,12 @@ bool remove_from_registry(EventHandler* eventHandler)
     bool nodeRemoved = false;
 
     int i = 0;
-    for(i = 0; (i < MAX_NO_OF_HANDLER) && (nodeRemoved == false); ++i)
+    for(i = 0; (i < MAX_NO_OF_HANDLES) && (nodeRemoved == false); ++i)
     {
-        if((registerHandlers[i].isUsed) && (registerHandlers[i].eventHandler == eventHandler))
+        if((registerHandles[i].isUsed) && (registerHandles[i].eventHandler == eventHandler))
         {
-            registerHandlers[i].isUsed = false;
-            nodeRemoved = 1;
+            registerHandles[i].isUsed = false;
+            nodeRemoved = true;
             
             Handle handle = get_handle(eventHandler->instance);
             debug("Reactor: Removed eventHandler with type %d\n", handle.fd.id);
@@ -95,19 +103,39 @@ bool remove_from_registry(EventHandler* eventHandler)
     }
     
     return nodeRemoved;
-
 }
 
-int build_event_pool(PoolEvents *poolEvents)
+bool reload_from_registry(EventHandler* eventHandler)
+{
+    bool isReloaded = false;
+    
+    int i = 0;
+    for(i = 0; (i < MAX_NO_OF_HANDLES) && (isReloaded == false); ++i)
+    {
+        if(registerHandles[i].eventHandler == eventHandler)
+        {
+            Handle handle = get_handle(eventHandler->instance);
+            
+            HandleRegistration* freeEntry = &registerHandles[i];
+            freeEntry->timeOut = handle.timerPreset;
+            freeEntry->poll = POLLHUP;
+            freeEntry->isUsed = isReloaded = true;
+            debug("Reactor: Reloaded eventHandler with ID = %d\n", handle.fd.id);
+        }
+    }
+    
+    return isReloaded;
+}
+int build_eventHandler_pool(EventHandler *eventHandlerPool[])
 {
     int noOfCopiedHandles = 0;
 
     int i = 0;
-    for(i = 0; i < MAX_NO_OF_HANDLER; ++i)
+    for(i = 0; i < MAX_NO_OF_HANDLES; ++i)
     {
-        if((registerHandlers[i].isUsed) && (registerHandlers[i].poolEvent.poll == POLLVAL))
+        if((registerHandles[i].isUsed) && (registerHandles[i].poll == POLLVAL))
         {
-            poolEvents[noOfCopiedHandles] = registerHandlers[i].poolEvent;
+            eventHandlerPool[noOfCopiedHandles] = registerHandles[i].eventHandler;
             ++noOfCopiedHandles;
         }
     }
@@ -115,64 +143,29 @@ int build_event_pool(PoolEvents *poolEvents)
     return noOfCopiedHandles;
 }
 
-EventHandler *find_eventHandler(EventFd fd)
-{
-    EventHandler *matchingHandler = NULL;
-
-    int i = 0;
-    for(i = 0; (i < MAX_NO_OF_HANDLER) && matchingHandler == NULL; ++i)
-    {
-        if((registerHandlers[i].poolEvent.fd.id == fd.id) && (registerHandlers[i].poolEvent.poll == POLLVAL))
-        {
-            matchingHandler = registerHandlers[i].eventHandler;
-        }
-    }
-
-    return matchingHandler;
-}
-
-void dispatch_signalled_events(PoolEvents *fds, const int noOfMessages)
+void dispatch_signalled_events(EventHandler *eventHandlerPool[], const int noOfMessages)
 {
     int i = 0;
     for(i = 0; i < noOfMessages; ++i)
     {
-        EventHandler *signalledHandler = find_eventHandler(fds[i].fd);
-
-        if(signalledHandler != NULL)
-        {
-            debug_message("dispatch_signalled_events");
-            signalledHandler->handleEvent(signalledHandler->instance);
-        }
-        else
-        {
-            debug_message("signalledHandler is NULL");
-        }
-
+        eventHandlerPool[i]->handleEvent(eventHandlerPool[i]->instance);
     }
 }
 
 void timer_tick()
 {
-    int noOfCopiedHandles = 0;
-
     int i = 0;
-    for(i = 0; i < MAX_NO_OF_HANDLER; ++i)
+    for(i = 0; i < MAX_NO_OF_HANDLES; ++i)
     {
-        if(registerHandlers[i].isUsed)
+        if(registerHandles[i].isUsed)
         {
-            if(registerHandlers[i].poolEvent.timeOut > 0)
+            if(registerHandles[i].timeOut > 0)
             {
-                registerHandlers[i].poolEvent.timeOut--;
-                registerHandlers[i].poolEvent.poll = POLLHUP;
+                registerHandles[i].timeOut--;
+                registerHandles[i].poll = POLLHUP;
             }
             else
-                registerHandlers[i].poolEvent.poll = POLLVAL;
-
-            ++noOfCopiedHandles;
+                registerHandles[i].poll = POLLVAL;
         }
-    }
-    for(i = 0; i < noOfCopiedHandles; ++i)
-    {
-        printf("registerHandlers[%d].fd.timeOut: %d\r\n", i,registerHandlers[i].poolEvent.timeOut);
     }
 }

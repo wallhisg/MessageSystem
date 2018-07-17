@@ -4,7 +4,7 @@
 #include <event/handle.h>
 
 typedef Handle (*get_handle_func)(void * instance);
-typedef void* (*handle_event_func)(void *instance);
+typedef void (*handle_event_func)(void *instance);
 
 typedef struct {
     void* instance;

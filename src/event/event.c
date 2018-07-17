@@ -4,12 +4,10 @@
 
 static Event SYSTEM_EVENT[MAX_NO_OF_EVENTS];
 
-
-
 int find_free_event_slot();
 int find_matching_eventHandler_slot(const EventHandler *eventHandler);
 void on_closed_event(void *closedEvent);
-void *event_demultiplexer(void *instance);
+void event_demultiplexer(void *instance);
 
 void event_init()
 {
@@ -34,7 +32,8 @@ void create_event(Handle handle)
         EventHandlerPtr eventHandler = &event->eventHandler;
         eventHandler->instance = event;
         eventHandler->getHandle = get_handle;
-        eventHandler->handleEvent = (void*)event_demultiplexer;
+        eventHandler->handleEvent = event_demultiplexer;
+        
         event->notifier.events = &SYSTEM_EVENT;
         event->notifier.onEventClosed = on_closed_event;
 
@@ -48,33 +47,41 @@ void create_event(Handle handle)
 void destroy_event(Event *event)
 {
     Handle handle = event->handle;
-//    debug("handle - timerPreset: %d\r\n", handle.timerPreset);
     if(handle.persistent == false)
     {
         unregist_event(&event->eventHandler);
         event->handle.fd.id = 0;
     }
+    else
+    {
+        reload_event(&event->eventHandler);
+    }
 }
 
 void on_closed_event(void *closedEvent)
 {
+    debug_message("on_closed_event");
     EventHandler *eventHandler = closedEvent;
     int eventHandlerSlot = find_matching_eventHandler_slot(eventHandler);
+
+    debug("on_closed_event - eventHandlerSlot: %d\r\n", eventHandlerSlot);
+    debug("on_closed_event - eventHandler address: %p\r\n", eventHandler);
 
     if(eventHandlerSlot < 0)
     {
         error("Phantom eventHandler detected");
     }
-    else {
+    else
+    {
         destroy_event(eventHandler->instance);
     }
 }
 
 Handle get_handle(void *instance)
 {
-    const EventPtr event_ = instance;
+    const EventPtr event = instance;
 
-    return event_->handle;
+    return event->handle;
 }
 
 
@@ -120,7 +127,22 @@ Event *get_system_event(const int i)
     return &SYSTEM_EVENT[i];
 }
 
-void *event_demultiplexer(void *instance)
+void event_demultiplexer(void *instance)
 {
+    Handle handle = get_handle(instance);
+    Event *event = instance;
+    printf("event->handle.timerPreset: %d\r\n ", handle.timerPreset);
     printf("event_demultiplexer\r\n");
+
+    event->notifier.onEventClosed(&event->eventHandler);
 }
+
+
+
+
+
+
+
+
+
+
