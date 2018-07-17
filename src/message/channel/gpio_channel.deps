@@ -1,2 +1,0 @@
-message.o: src/message/message.c
-src/message/channel/gpio_channel.deps: src/message/message.c

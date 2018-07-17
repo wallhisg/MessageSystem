@@ -15,15 +15,15 @@
 #define REVENT_READ_GPIO        0x02
 #define REVENT_READ_ADC         0x03
 
-// typedef uint16_t    EventID;
 
+// Define event's file description
 typedef union {
     struct {
-        uint8_t events;
-        uint8_t revents;
+        uint8_t events;     /* requested events */
+        uint8_t revents;    /* returned events */
     } fd; 
     uint16_t id;
-} EventId;
+} EventFd;
 
 typedef struct {
     uint16_t preset;
@@ -32,9 +32,9 @@ typedef struct {
 
 typedef struct {
     AddressValue addressValue;
-    EventId eventId;
+    EventFd fd;
     bool persistent;
-    Timer timer;
+    uint16_t timerPreset;
 } Handle;
 
 #endif  //  HANDLE_H

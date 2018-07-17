@@ -42,6 +42,7 @@ include ./MessageSystem/xmodule.mk
 
 # Unit test
 include ./unitTest/TEST_MESSAGE/TEST_ENDPOINT/xmodule.mk
+include ./unitTest/TEST_EVENT/TEST_REACTOR/xmodule.mk
 
 #======================================================================
 .PHONY: default build run all clean
@@ -57,6 +58,9 @@ test: $(OBJS) $(TMPS) $(TESTS)
 TEST_MESSAGE_ENDPOINT:
 	@./unitTest/TEST_MESSAGE/TEST_ENDPOINT/TEST_MESSAGE_ENDPOINT
 
+TEST_EVENT_REACTOR:
+	@./unitTest/TEST_EVENT/TEST_REACTOR/TEST_EVENT_REACTOR
+	
 #mem_program: $(PROGRAMS)
 #	valgrind --tool=memcheck --leak-check=full --undef-value-errors=no $(PROGRAMS)
 	

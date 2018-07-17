@@ -7,6 +7,7 @@
 #include <event/event_handler.h>
 #include <event/event_notifier.h>
 
+#define MAX_NO_OF_EVENTS    8
 
 typedef struct {
     Handle handle;
@@ -14,16 +15,12 @@ typedef struct {
     EventNotifier notifier;
 } Event, *EventPtr;
 
-// Define poll event file description
-typedef struct {
-    uint16_t fd;             /* file descriptor */
-    uint8_t events;       /* requested events */
-    uint8_t revents;     /* returned events */
-} PollEventFd; 
-
-Handle get_handle(void *instance);
-
 void event_init();
 
+Handle get_handle(void *instance);
+void create_event(Handle handle);
+void destroy_event(Event *event);
+
+Event *get_system_event(const int i);
 
 #endif // EVENT_H

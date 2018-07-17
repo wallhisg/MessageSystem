@@ -4,7 +4,7 @@
 int main()
 {
     printf("Message system\r\n");
-    EventId eventId = {0};
+    EventFd eventId = {0};
     eventId.id = (REVENT_READ_ADC << 8) | EVENT_WRITE_REGISTER;
     
     printf("EventID: %x\n", eventId.id);

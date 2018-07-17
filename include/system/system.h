@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <event/error.h>
 #include "config.h"
 #include "debug.h"
 

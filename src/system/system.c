@@ -7,7 +7,7 @@
 
 void system_init()
 {
-//     system_event_init();
+    event_init();
     
     endpoint_init();
     channel_init();

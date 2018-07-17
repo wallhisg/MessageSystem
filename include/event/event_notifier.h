@@ -1,7 +1,7 @@
 #ifndef EVENT_NOTIFIER_H
 #define EVENT_NOTIFIER_H
 
-typedef void (*on_event_closed_func)(void* events, void* closedEvent);
+typedef void (*on_event_closed_func)(void* closedEvent);
 
 typedef struct
 {
