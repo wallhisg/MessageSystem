@@ -44,6 +44,7 @@ include ./MessageSystem/xmodule.mk
 include ./unitTest/TEST_MESSAGE/TEST_ENDPOINT/xmodule.mk
 include ./unitTest/TEST_EVENT/TEST_REACTOR/xmodule.mk
 include ./unitTest/TEST_EVENT/TEST_HANDLE_EVENT/xmodule.mk
+include ./unitTest/TEST_EVENT/TEST_EVENT_DESCRIPTION/xmodule.mk
 
 #======================================================================
 .PHONY: default build run all clean
@@ -63,11 +64,16 @@ TEST_EVENT_REACTOR:
 	@./unitTest/TEST_EVENT/TEST_REACTOR/TEST_EVENT_REACTOR
 	
 TEST_HANDLE_EVENT:
-	@./unitTest/TEST_EVENT/TEST_HANDLE_EVENT/TEST_HANDLE_EVENT	
+	@./unitTest/TEST_EVENT/TEST_HANDLE_EVENT/TEST_HANDLE_EVENT
 	
-#mem_program: $(PROGRAMS)
-#	valgrind --tool=memcheck --leak-check=full --undef-value-errors=no $(PROGRAMS)
+TEST_EVENT_DESCRIPTION:	
+	@./unitTest/TEST_EVENT/TEST_EVENT_DESCRIPTION/TEST_EVENT_DESCRIPTION
 	
+mem_program: $(PROGRAMS)
+	valgrind --tool=memcheck --leak-check=full --undef-value-errors=no $(PROGRAMS)
+	
+mem_test: $(TESTS)
+	valgrind --tool=memcheck --leak-check=full --undef-value-errors=no $(TESTS)	
 clean:
 	$(RM) $(OBJS) $(DEPS) $(PROGRAMS) $(TMPS) $(TESTS)
 

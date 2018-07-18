@@ -1,4 +1,5 @@
 #include <event/event.h>
+#include <event/event_manager.h>
 #include <event/reactor.h>
 
 
@@ -15,14 +16,14 @@ void event_init()
 
     for(i = 0; i < MAX_NO_OF_EVENTS; ++i)
     {
-        SYSTEM_EVENT[i].handle.fd.id = 0;
+        SYSTEM_EVENT[i].handle.eds.event.value = 0;
     }
 }
 
 void create_event(Handle handle)
 {
     int eventSlot = find_free_event_slot();
-    printf("eventSlot %d\r\n", eventSlot);
+//     printf("eventSlot %d\r\n", eventSlot);
 
     if(eventSlot >= 0)
     {
@@ -36,26 +37,11 @@ void create_event(Handle handle)
         
         event->notifier.events = &SYSTEM_EVENT;
         event->notifier.onEventClosed = on_closed_event;
-
+        printf("Handle address - create_event %p\r\n", &event->handle);
         regist_event(&event->eventHandler);
     }
     else
         debug_message("create_event: FALSE");
-}
-
-
-void destroy_event(Event *event)
-{
-    Handle handle = event->handle;
-    if(handle.persistent == false)
-    {
-        unregist_event(&event->eventHandler);
-        event->handle.fd.id = 0;
-    }
-    else
-    {
-        reload_event(&event->eventHandler);
-    }
 }
 
 void on_closed_event(void *closedEvent)
@@ -64,8 +50,8 @@ void on_closed_event(void *closedEvent)
     EventHandler *eventHandler = closedEvent;
     int eventHandlerSlot = find_matching_eventHandler_slot(eventHandler);
 
-    debug("on_closed_event - eventHandlerSlot: %d\r\n", eventHandlerSlot);
-    debug("on_closed_event - eventHandler address: %p\r\n", eventHandler);
+//     debug("on_closed_event - eventHandlerSlot: %d\r\n", eventHandlerSlot);
+//     debug("on_closed_event - eventHandler address: %p\r\n", eventHandler);
 
     if(eventHandlerSlot < 0)
     {
@@ -77,6 +63,20 @@ void on_closed_event(void *closedEvent)
     }
 }
 
+void destroy_event(Event *event)
+{
+    Handle handle = event->handle;
+    if(handle.persistent == false)
+    {
+        unregist_event(&event->eventHandler);
+        event->handle.eds.event.value = 0;
+    }
+    else
+    {
+        reload_event(&event->eventHandler);
+    }
+}
+
 Handle get_handle(void *instance)
 {
     const EventPtr event = instance;
@@ -84,7 +84,12 @@ Handle get_handle(void *instance)
     return event->handle;
 }
 
-
+Handle *get_handle_by_pointer(void *instance)
+{
+    const EventPtr event = instance;
+    
+    return &event->handle;
+}
 int find_free_event_slot()
 {
     int eventSlot = -1;
@@ -93,7 +98,7 @@ int find_free_event_slot()
     int i = 0;
     for(i = 0; (i < MAX_NO_OF_EVENTS) && (slotFound == 0); ++i)
     {
-        if(SYSTEM_EVENT[i].handle.fd.id == 0)
+        if(SYSTEM_EVENT[i].handle.eds.event.value == 0)
         {
             eventSlot = i;
             slotFound = 1;
@@ -129,11 +134,18 @@ Event *get_system_event(const int i)
 
 void event_demultiplexer(void *instance)
 {
-    Handle handle = get_handle(instance);
+    Handle *handle = get_handle_by_pointer(instance);
     Event *event = instance;
-    printf("event->handle.timerPreset: %d\r\n ", handle.timerPreset);
+    
+    printf("Handle address %p\r\n", handle);
+    
     printf("event_demultiplexer\r\n");
+    printf("event->handle.timerPreset: %d\r\n ", handle->timerPreset);
 
+    handle_events_by_description(handle);
+    
+    printf("event_demultiplexer\r\n");
+    printf("handle->timerPreset: %d\r\n", handle->timerPreset);
     event->notifier.onEventClosed(&event->eventHandler);
 }
 

@@ -1,0 +1,8 @@
+#ifndef EVENT_MANAGER_H
+#define EVENT_MANAGER_H
+
+#include <event/handle.h>
+
+void handle_events_by_description(Handle *handle);
+
+#endif // EVENT_MANAGER_H

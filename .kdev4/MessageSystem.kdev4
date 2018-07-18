@@ -217,7 +217,7 @@ pattern=.hg
 targets=2
 
 [Launch]
-Launch Configurations=Launch Configuration 0,Launch Configuration 1,Launch Configuration 2,Launch Configuration 3
+Launch Configurations=Launch Configuration 0,Launch Configuration 1,Launch Configuration 2,Launch Configuration 3,Launch Configuration 4,Launch Configuration 5,Launch Configuration 6
 
 [Launch][Launch Configuration 0]
 Configured Launch Modes=execute
@@ -286,6 +286,60 @@ Dependency Action=Nothing
 EnvironmentGroup=
 Executable=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
 External Terminal=make TEST_HANDLE_EVENT
+Project Target=
+Use External Terminal=true
+Working Directory=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+isExecutable=true
+
+[Launch][Launch Configuration 4]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=mem_program
+Type=Native Application
+
+[Launch][Launch Configuration 4][Data]
+Arguments=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
+EnvironmentGroup=
+Executable=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+External Terminal=make mem_program
+Project Target=
+Use External Terminal=true
+Working Directory=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+isExecutable=true
+
+[Launch][Launch Configuration 5]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=MEM_TEST
+Type=Native Application
+
+[Launch][Launch Configuration 5][Data]
+Arguments=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
+EnvironmentGroup=
+Executable=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+External Terminal=make mem_test
+Project Target=
+Use External Terminal=true
+Working Directory=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+isExecutable=true
+
+[Launch][Launch Configuration 6]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=TEST_EVENT_DESCRIPTION
+Type=Native Application
+
+[Launch][Launch Configuration 6][Data]
+Arguments=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
+EnvironmentGroup=
+Executable=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+External Terminal=make TEST_EVENT_DESCRIPTION
 Project Target=
 Use External Terminal=true
 Working Directory=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem

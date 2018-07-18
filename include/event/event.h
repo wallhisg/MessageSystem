@@ -7,7 +7,7 @@
 #include <event/event_handler.h>
 #include <event/event_notifier.h>
 
-#define MAX_NO_OF_EVENTS    8
+#define MAX_NO_OF_EVENTS    16
 
 typedef struct {
     Handle handle;
@@ -19,6 +19,7 @@ typedef struct {
 void event_init();
 
 Handle get_handle(void *instance);
+Handle *get_handle_by_pointer(void *instance);
 void create_event(Handle handle);
 void destroy_event(Event *event);
 

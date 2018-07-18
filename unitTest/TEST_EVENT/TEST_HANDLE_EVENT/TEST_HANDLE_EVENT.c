@@ -2,8 +2,8 @@
 #include <system/system.h>
 #include <event/handle.h>
 #include <event/event.h>
-#include <event/reactor_event_loop.h>
-#include <event/poll_reactor.h>
+#include <event/event_loop.h>
+#include <event/reactor.h>
 
 int main()
 {
@@ -12,17 +12,19 @@ int main()
     
     Handle handle = {0};
 
-    handle.fd.id = (REVENT_READ_ADC << 8) | EVENT_WRITE_REGISTER;
+    handle.eds.event.fields.et = ET_READ;
+    handle.eds.event.fields.pt = PT_UART;
     handle.timerPreset = 3;
     handle.persistent = true;
-    handle.addressValue.address = 0x55;
-    handle.addressValue.value = 0xAA;
+    handle.fileData.address = 0x55;
+    handle.fileData.value = 0xAA;
 
     create_event(handle);
-    handle.fd.id = (REVENT_READ_ADC << 8) | EVENT_WRITE_REGISTER;
-    handle.timerPreset = 4;
-    handle.persistent = true;
-    create_event(handle);
+//     handle.eds.event.fields.et = ET_READ;
+//     handle.eds.event.fields.pt = PT_UART;
+//     handle.timerPreset = 4;
+//     handle.persistent = true;
+//     create_event(handle);
 
     handle_events();
     timer_tick();
@@ -31,15 +33,13 @@ int main()
     timer_tick();
     timer_tick();
     handle_events();
-    handle_events();
-    handle_events();
-    timer_tick();
-    timer_tick();
-    timer_tick();
-    timer_tick();
-    timer_tick();    
-    handle_events();
-    handle_events();    
+  
+    Event *event0 = get_system_event(0);
+    
+    printf("MAIN\r\n");
+    printf("handle address %p\r\n", &event0->handle);
+    printf("handle.eds.event.value: %d\r\n", event0->handle.eds.event.value);
+    printf("handle.timerPreset: %d\r\n", event0->handle.timerPreset);
     return 0; 
 }
 

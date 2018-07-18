@@ -1,0 +1,2 @@
+error.o: src/event/error.c
+src/event/poll_reactor.deps: src/event/error.c

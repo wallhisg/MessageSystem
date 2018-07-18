@@ -20,7 +20,7 @@
 
 typedef struct {
     EventHandler *eventHandler;
-    PollEvent poll;
+    EventPoll poll;
     uint16_t timeOut;
     bool isUsed;
 } HandleRegistration;

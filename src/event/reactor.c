@@ -2,7 +2,7 @@
 #include <event/reactor.h>
 #include <event/event.h>
 #include <event/handle.h>
-#include <event/reactor_event_loop.h>
+#include <event/event_loop.h>
 
 static HandleRegistration registerHandles[MAX_NO_OF_HANDLES];
 
@@ -15,7 +15,7 @@ void dispatch_signalled_events(EventHandler *eventHandlerPool[], const int noOfM
 
 void regist_event(EventHandler* eventHandler)
 {
-    debug_message("regist_event");
+//     debug_message("regist_event");
     if(eventHandler != NULL)
     {
         if(!add_to_registry(eventHandler))
@@ -27,7 +27,7 @@ void regist_event(EventHandler* eventHandler)
 
 void unregist_event(EventHandler* eventHandler)
 {
-    debug_message("unregist_event");
+//     debug_message("unregist_event");
     if(eventHandler != NULL)
     {
         if(!remove_from_registry(eventHandler))
@@ -48,6 +48,7 @@ void reload_event(EventHandler* eventHandler)
         }
     }
 }
+
 void handle_events(void)
 {
     EventHandler *eventHandlerPool[MAX_NO_OF_HANDLES];
@@ -78,7 +79,7 @@ bool add_to_registry(EventHandler* eventHandler)
             freeEntry->timeOut = handle.timerPreset;
             freeEntry->poll = POLLHUP;
             freeEntry->isUsed = isRegistered = true;
-            debug("Reactor: Added eventHandler with ID = %d\n", handle.fd.id);
+            debug("Reactor: Added eventHandler with ID = %d\n", handle.eds.event.value);
         }
     }
     
@@ -98,7 +99,7 @@ bool remove_from_registry(EventHandler* eventHandler)
             nodeRemoved = true;
             
             Handle handle = get_handle(eventHandler->instance);
-            debug("Reactor: Removed eventHandler with type %d\n", handle.fd.id);
+            debug("Reactor: Removed eventHandler with type %d\n", handle.eds.event.value);
         }
     }
     
@@ -120,7 +121,7 @@ bool reload_from_registry(EventHandler* eventHandler)
             freeEntry->timeOut = handle.timerPreset;
             freeEntry->poll = POLLHUP;
             freeEntry->isUsed = isReloaded = true;
-            debug("Reactor: Reloaded eventHandler with ID = %d\n", handle.fd.id);
+            debug("Reactor: Reloaded eventHandler with ID = %d\n", handle.eds.event.value);
         }
     }
     
