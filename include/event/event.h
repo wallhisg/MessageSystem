@@ -1,6 +1,7 @@
 #ifndef EVENT_H
 #define EVENT_H
 
+#include <stdint.h>
 #include <stdbool.h>
 #include <system/system.h>
 #include <event/handle.h>
@@ -15,6 +16,8 @@ typedef struct {
     EventNotifier notifier;
 } Event, *EventPtr;
 
+EventDescription event_description(uint8_t REVENT_ET, uint8_t REVENT_PT,
+                           uint8_t EVENT_ET, uint8_t EVENT_PT);
 
 void event_init();
 

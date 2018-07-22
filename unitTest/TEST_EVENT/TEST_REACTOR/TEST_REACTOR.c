@@ -16,8 +16,8 @@ int main()
     handle.eds.event.fields.pt = PT_UART;
     handle.timerPreset = 10;
     handle.persistent = false;
-    handle.fileData.address = 0x55;
-    handle.fileData.value = 0xAA;
+    handle.buff.address = 0x55;
+    handle.buff.value = 0xAA;
 
     create_event(handle);
     handle.persistent = true;

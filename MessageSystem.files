@@ -17,6 +17,7 @@ src/event/event_manager.c
 src/event/event_manager.c
 src/event/reactor.c
 src/system/system.c
+unitTest/TEST_EVENT/TEST_EVENT_DESCRIPTION/TEST_EVENT_DESCRIPTION.c
 unitTest/TEST_EVENT/TEST_HANDLE_EVENT/TEST_HANDLE_EVENT.c
 unitTest/TEST_EVENT/TEST_REACTOR/TEST_REACTOR.c
 unitTest/TEST_MESSAGE/TEST_ENDPOINT/TEST_ENDPOINT.c

@@ -23,7 +23,7 @@ void event_init()
 void create_event(Handle handle)
 {
     int eventSlot = find_free_event_slot();
-//     printf("eventSlot %d\r\n", eventSlot);
+     printf("eventSlot %d\r\n", eventSlot);
 
     if(eventSlot >= 0)
     {
@@ -134,22 +134,25 @@ Event *get_system_event(const int i)
 
 void event_demultiplexer(void *instance)
 {
+    printf("event_demultiplexer\r\n");
+
     Handle *handle = get_handle_by_pointer(instance);
     Event *event = instance;
     
-    printf("Handle address %p\r\n", handle);
-    
-    printf("event_demultiplexer\r\n");
-    printf("event->handle.timerPreset: %d\r\n ", handle->timerPreset);
-
     handle_events_by_description(handle);
-    
-    printf("event_demultiplexer\r\n");
-    printf("handle->timerPreset: %d\r\n", handle->timerPreset);
+    handle_revent_by_description(handle);
+
     event->notifier.onEventClosed(&event->eventHandler);
 }
 
-
+EventDescription event_description(uint8_t REVENT_ET, uint8_t REVENT_PT,
+                                   uint8_t EVENT_ET, uint8_t EVENT_PT)
+{
+    EventDescription eds;
+    eds.revent.value = (REVENT_ET << 5 | REVENT_PT);
+    eds.event.value = (EVENT_ET << 5 | EVENT_PT);
+    return eds;
+}
 
 
 

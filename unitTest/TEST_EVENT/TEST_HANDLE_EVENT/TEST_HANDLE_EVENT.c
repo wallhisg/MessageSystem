@@ -11,29 +11,29 @@ int main()
     system_init();
     
     Handle handle = {0};
+    handle.eds = event_description(ET_SEND, PT_UART, ET_READ, PT_GPIO);
+    handle.buff.address = 0x55;
+    handle.buff.value = 0xAA;
+    handle.timerPreset = 0;
 
-    handle.eds.event.fields.et = ET_READ;
-    handle.eds.event.fields.pt = PT_UART;
-    handle.timerPreset = 3;
-    handle.persistent = true;
-    handle.fileData.address = 0x55;
-    handle.fileData.value = 0xAA;
+    printf("BEFORE\r\n");
+    printf("handle.eds.event.fields.et: %d\r\n", handle.eds.event.fields.et);
+    printf("handle.eds.event.fields.pt: %d\r\n", handle.eds.event.fields.pt);
+
+    printf("handle.eds.revent.fields.et: %d\r\n", handle.eds.revent.fields.et);
+    printf("handle.eds.revent.fields.pt: %d\r\n", handle.eds.revent.fields.pt);
+
+    printf("handle.buff.address: %d\r\n", handle.buff.address);
+    printf("handle.buff.value: %d\r\n", handle.buff.value);
 
     create_event(handle);
-//     handle.eds.event.fields.et = ET_READ;
-//     handle.eds.event.fields.pt = PT_UART;
-//     handle.timerPreset = 4;
-//     handle.persistent = true;
-//     create_event(handle);
+    timer_tick();
+    handle_events();
+//    timer_tick();
+//    handle_events();
+//    timer_tick();
+//    handle_events();
 
-    handle_events();
-    timer_tick();
-    timer_tick();
-    timer_tick();
-    timer_tick();
-    timer_tick();
-    handle_events();
-  
     Event *event0 = get_system_event(0);
     
     printf("MAIN\r\n");

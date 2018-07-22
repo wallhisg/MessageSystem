@@ -49,3 +49,9 @@ void gpio_disable_pin(void *instance)
     printf("bit %d\r\n", addressValue->value);
 }
 
+
+void gpio_read(EventBuff *eventBuff)
+{
+    eventBuff->address = 12;
+    eventBuff->value = 45;
+}

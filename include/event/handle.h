@@ -4,18 +4,6 @@
 #include <stdbool.h>
 #include <system/system.h>
 
-// POLLIN
-#define EVENTS                  0x00
-#define EVENT_WRITE_REGISTER    0x01
-#define EVENT_WRITE_GPIO        0x02
-
-
-// POLLOUT
-#define REVENTS                 0x00
-#define REVENT_READ_REGISTER    0x01
-#define REVENT_READ_GPIO        0x02
-#define REVENT_READ_ADC         0x03
-
 //  Define file table - Operations
 #define ET_NONE     0b000
 #define ET_READ     0b001
@@ -54,7 +42,7 @@ typedef struct {
 } EventDescription;
 
 typedef struct {
-    EventBuff fileData;
+    EventBuff buff;
     EventDescription eds;
     bool persistent;
     uint16_t timerPreset;
