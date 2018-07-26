@@ -9,68 +9,74 @@ JsonConsume tok_colon(const char c, JsonConsume jsonConsume);
 JsonConsume tok_comma(const char c, JsonConsume jsonConsume);
 JsonConsume tok_dq_mark(const char c, JsonConsume jsonConsume);
 JsonConsume tok_letter(const char c, JsonConsume jsonConsume);
-void consume_all_char(Buffer *uartRxBuffer, int i);
 
-int json_parser(JsonSchema *jsonSchema, BufferPtr uartRxBuffer)
+JsonType get_json_type(Buffer *inBuff)
+
 {
-    debug("BUFFER SIZE %d\r\n", uartRxBuffer->size);
-    JsonSchema *schema = jsonSchema;
+    debug_json("BUFFER SIZE %d\r\n", inBuff->size);
 
-    JsonConsume jsonConsume;
-    json_consume_init(&jsonConsume);
-    jsonConsume.nextTok = tok_letter_start;
+    Buffer *jsonBuff = get_json_buffer();
+    
+	JsonConsume consume;
+    json_consume_init(&consume);
+    consume.nextTok = tok_letter_start;
 
     char byte;
     int i = 0;
-    for(i = 0; i < uartRxBuffer->size; i++)
+    for(i = 0; i < inBuff->size; i++)
     {
-        byte = buffer_read_one_byte(uartRxBuffer);
+        // process array char from buffer
+        byte = buffer_read_one_byte(inBuff);
 
-        // block process string from uart buffer
-        jsonConsume = consume_char(byte, jsonConsume);
+        consume = consume_char(byte, consume);
 
-        if(jsonConsume.tribool == TRIBOOL_TRUE)
+        if(consume.tribool == TRIBOOL_TRUE)
         {
-            schema->buff[schema->idx++] = byte;
+            if(jsonBuff->status != RING_STATUS_FULL)
+            {
+                write_one_byte_to_json_buffer(byte);
+            }
+            else
+            {
+                consume.tribool = TRIBOOL_FALSE;
+                consume.type = JSON_TYPE_UNDEFINED;
+                // read buffer continuously until get LF
+                consume_buffer(jsonBuff, LF);
+                consume_buffer(inBuff, LF);
+                error("JSON BUFFER IS FULL");
+                break;
+            }
         }
-        else if(jsonConsume.tribool == TRIBOOL_FALSE)
+        else if(consume.tribool == TRIBOOL_FALSE)
         {
-            debug_message("Json string false.\r\n");
-            jsonConsume.type = JSON_TYPE_UNDEFINED;
-            // read until get CR
-            consume_all_char(uartRxBuffer, i);
+            debug("Json string false at %d.\r\n", i);
+            consume.type = JSON_TYPE_UNDEFINED;
+            // read buffer continuously until get LF
+            consume_buffer(jsonBuff, LF);
+            consume_buffer(inBuff, LF);
+            break;
         }
         // end block; end of json frame \n
         if(byte == LF)
             break;
     }
-
-    if (jsonConsume.tribool == TRIBOOL_FALSE || jsonConsume.tribool == TRIBOOL_INDETERMINATE)
-    {
-        schema->type = JSON_TYPE_UNDEFINED;
-    }
-    else
-    {
-        schema->type = jsonConsume.type;
-        schema->buff[schema->idx++] = LF;
-    }
-
-    return jsonConsume.tribool;
+    
+    return consume.type;
 }
 
 JsonConsume consume_char(char c, JsonConsume jsonConsume)
 {
 
     JsonConsume consume;
-    debug("tokCounter %u\r\n", jsonConsume.tokCounter);
+    debug_json("tokCounter %u\r\n", jsonConsume.tokCounter);
     consume = jsonConsume.nextTok(c, jsonConsume);
-    debug("consume_char: %d : >> \r\n", c);
+    debug_json("consume_char: %d : >> \r\n", c);
     return consume;
 }
 
 JsonConsume tok_letter_start(const char c, JsonConsume jsonConsume)
 {
-    debug_message("tok_letter_start");
+    debug_json("tok_letter_start");
 
     JsonConsume consume = jsonConsume;
 
@@ -107,7 +113,7 @@ JsonConsume tok_letter_start(const char c, JsonConsume jsonConsume)
 // "
 JsonConsume tok_dq_mark(const char c, JsonConsume jsonConsume)
 {
-    debug_message("tok_dq_mark");
+    debug_json("tok_dq_mark");
 
     JsonConsume consume = jsonConsume;
 
@@ -166,7 +172,7 @@ JsonConsume tok_dq_mark(const char c, JsonConsume jsonConsume)
 // {
 JsonConsume tok_l_curly(const char c, JsonConsume jsonConsume)
 {
-    debug_message("tok_l_curly");
+    debug_json("tok_l_curly");
 
     JsonConsume consume = jsonConsume;
     switch (c)
@@ -193,7 +199,7 @@ JsonConsume tok_l_curly(const char c, JsonConsume jsonConsume)
 // }
 JsonConsume tok_r_curly(const char c, JsonConsume jsonConsume)
 {
-    debug_message("tok_r_curly");
+    debug_json("tok_r_curly");
 
     JsonConsume consume = jsonConsume;
 
@@ -237,7 +243,7 @@ JsonConsume tok_r_curly(const char c, JsonConsume jsonConsume)
 //  [
 JsonConsume tok_l_bracket(const char c, JsonConsume jsonConsume)
 {
-    debug_message("tok_l_bracket");
+    debug_json("tok_l_bracket");
 
     JsonConsume consume = jsonConsume;
     // pending
@@ -260,7 +266,7 @@ JsonConsume tok_l_bracket(const char c, JsonConsume jsonConsume)
 //  ]
 JsonConsume tok_r_bracket(const char c, JsonConsume jsonConsume)
 {
-    debug_message("tok_r_bracket");
+    debug_json("tok_r_bracket");
 
     JsonConsume consume = jsonConsume;
 
@@ -295,7 +301,7 @@ JsonConsume tok_r_bracket(const char c, JsonConsume jsonConsume)
 // :
 JsonConsume tok_colon(const char c, JsonConsume jsonConsume)
 {
-    debug_message("tok_colon");
+    debug_json("tok_colon");
 
     JsonConsume consume = jsonConsume;
     switch (c)
@@ -331,7 +337,7 @@ JsonConsume tok_colon(const char c, JsonConsume jsonConsume)
 //  ,
 JsonConsume tok_comma(const char c, JsonConsume jsonConsume)
 {
-    debug_message("tok_comma");
+    debug_json("tok_comma");
 
     JsonConsume consume = jsonConsume;
 
@@ -354,7 +360,7 @@ JsonConsume tok_comma(const char c, JsonConsume jsonConsume)
 //  0 -> 9; a -> Z
 JsonConsume tok_letter(const char c, JsonConsume jsonConsume)
 {
-    debug_message("tok_letter");
+    debug_json("tok_letter");
 
     JsonConsume consume = jsonConsume;
 
@@ -393,16 +399,4 @@ JsonConsume tok_letter(const char c, JsonConsume jsonConsume)
     }
 
     return consume;
-}
-
-void consume_all_char(Buffer *uartRxBuffer, int i)
-{
-    char byte;
-    int j = 0;
-    for(j = i; j < uartRxBuffer->size; j++)
-    {
-        byte = buffer_read_one_byte(uartRxBuffer);
-        if(byte == LF)
-            break;
-    }
 }

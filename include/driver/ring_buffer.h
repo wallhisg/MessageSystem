@@ -1,6 +1,7 @@
 #ifndef RING_BUFFER_H
 #define RING_BUFFER_H
 
+#include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 #include <system/system.h>
@@ -22,15 +23,17 @@ typedef struct {
     BufferStatus status;
 } Buffer, *BufferPtr;
 
-void buffer_reset(BufferPtr buff);
+void buffer_reset(Buffer *buff);
 
-void buffer_write_one_byte(Buffer *buff, const uint8_t byte);
-uint16_t buffer_write_bytes(BufferPtr buff, uint8_t* bytes);
+void buffer_write_one_byte(Buffer *buff, const char byte);
+uint16_t buffer_write_bytes(Buffer *buff, char *bytes);
 
-const char buffer_read_one_byte(BufferPtr buff);
-uint16_t buffer_read_bytes(char *result,  BufferPtr buff);
+const char buffer_read_one_byte(Buffer *buff);
+uint16_t buffer_read_bytes(char *result,  Buffer *buff);
 
-const uint16_t buffer_bytes_used(const BufferPtr buff);
-const BufferStatus get_buffer_status(BufferPtr buff);
+const uint16_t buffer_bytes_used(const Buffer *buff);
+const uint16_t buffer_size_get(const Buffer *buff);
+const BufferStatus get_buffer_status(Buffer *buff);
+void consume_buffer(Buffer *buff, char ctrlChar);
 
 #endif // RING_BUFFER_H

@@ -2,34 +2,49 @@
 #include <string.h>
 
 static char JSON_BUFFER[MAX_NO_OF_JSON_BUFFER];
-static JsonSchema jsonSchema;
 
 static JsonObject JSON_OBJECT[MAX_NO_OF_JSON_OBJECT];
 static JsonObjectArray objectArray;
 
+static Buffer jsonBuff;
 
 void json_init()
 {
     clear_buffer(JSON_BUFFER, MAX_NO_OF_JSON_BUFFER);
-    // init json schema
-    jsonSchema.type = JSON_TYPE_UNDEFINED;
-    jsonSchema.buff = JSON_BUFFER;
-    jsonSchema.idx = 0;
 
+    // init json buffer
+    jsonBuff.buffer = JSON_BUFFER;
+    jsonBuff.size = MAX_NO_OF_JSON_BUFFER;
+    jsonBuff.head = jsonBuff.tail = jsonBuff.buffer;
+    buffer_reset(&jsonBuff);;
+    
     // init json object
     memset(JSON_OBJECT, 0, MAX_NO_OF_JSON_OBJECT * sizeof(JsonObject));
 
     objectArray.jsonObj = JSON_OBJECT;
     objectArray.size = MAX_NO_OF_JSON_OBJECT;
+    
+    
 }
+
+Buffer *get_json_buffer()
+{
+    return &jsonBuff;
+}
+
+void write_one_byte_to_json_buffer(char byte)
+{
+    buffer_write_one_byte(&jsonBuff, byte);
+}
+
+char read_one_byte_from_json_buffer()
+{
+    return buffer_read_one_byte(&jsonBuff);
+}
+
 void clear_buffer(char *buff, size_t size)
 {
     memset(buff, 0, size);
-}
-
-JsonSchema *get_json_schema()
-{
-    return &jsonSchema;
 }
 
 bool is_tok_letter(const char c)

@@ -1,15 +1,14 @@
 #include <event/event_manager.h>
+#include <driver/driver.h>
 
 void event_table_read(Handle *handle);
 void event_table_write(Handle *handle);
 void event_table_recv(Handle *handle);
 void event_table_send(Handle *handle);
+void event_table_parser(Handle *handle);
 
 void handle_events_by_description(Handle *handle)
 {
-    printf("handle_events_by_description\r\n");
-    printf("handle->eds.event.fields.et: %d\r\n", handle->eds.event.fields.et);
-
     EventDescription *eds = &handle->eds;
 
     switch (eds->event.fields.et) {
@@ -33,6 +32,11 @@ void handle_events_by_description(Handle *handle)
             event_table_send(handle);
             break;
         }
+        case ET_PARSER:
+        {
+            event_table_parser(handle);
+            break;
+        }
         default:
             break;
     }
@@ -46,7 +50,7 @@ void event_table_read(Handle *handle)
     switch (eds->event.fields.pt) {
         case PT_GPIO:
         {
-            gpio_read(&handle->buff);
+            gpio_read(&handle->ad);
             break;
         }
         case PT_ADC:
@@ -70,6 +74,7 @@ void event_table_write(Handle *handle)
     switch (eds->event.fields.pt) {
         case PT_GPIO:
         {
+            gpio_write(&handle->ad);
             break;
         }
         case PT_PWM:
@@ -117,22 +122,52 @@ void event_table_send(Handle *handle)
     }
 }
 
-void handle_revent_by_description(Handle *handle)
+void event_table_parser(Handle *handle)
 {
-    printf("handle_revent_by_description\r\n");
-
     EventDescription *eds = &handle->eds;
 
-    if(eds->revent.value)
-    {
-       eds->event .value= eds->revent.value;
-       eds->revent.value = 0;
-       handle->persistent = true;
-    }
-    else
-    {
-        eds->event.value = 0;
-        eds->revent.value = 0;
-        handle->persistent = false;
+    switch (eds->event.fields.pt) {
+        case PT_RX_UART:
+        {
+            uart_rx_parser();
+            break;
+        }
+        case PT_PWM:
+        {
+            break;
+        }
+        default:
+            break;
     }
 }
+void handle_revent_by_description(Handle *handle)
+{
+    EventDescription *eds = &handle->eds;
+    
+    // Loop continuously if persistent is TRIBOOL_INDETERMINATE
+    if(handle->persistent != TRIBOOL_INDETERMINATE)
+    {
+        if(eds->revent.value)
+        {
+        eds->event .value= eds->revent.value;
+        eds->revent.value = 0;
+        handle->persistent = TRIBOOL_TRUE;
+        }
+        else
+        {
+            eds->event.value = 0;
+            eds->revent.value = 0;
+            handle->persistent = TRIBOOL_FALSE;
+        }
+    }
+    else 
+    {
+        // Reload event
+        if(eds->revent.value)
+        {
+            eds->event .value= eds->revent.value;
+        }
+    }
+}
+
+

@@ -1,14 +1,9 @@
 #ifndef GPIO_H
 #define GPIO_H
 
+#include <system/config.h>
 #include <system/system.h>
 #include <event/handle.h>
-
-typedef struct {
-    uint8_t address;
-    uint8_t value;
-} address_value_t, *address_value_ptr;
-
 
 
 // typedef struct {
@@ -23,6 +18,7 @@ void gpio_read_pin_state(void *instance);
 void gpio_toggle_pin(void *instance);
 void gpio_enable_pin(void *instance);
 void gpio_disable_pin(void *instance);
-void gpio_read(EventBuff *eventBuff);
+void gpio_read(AddressValue *eventBuff);
+void gpio_write(AddressValue *eventBuff);
 
 #endif  //  GPIO_H

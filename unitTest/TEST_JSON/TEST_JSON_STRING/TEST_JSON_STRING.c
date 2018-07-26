@@ -1,5 +1,4 @@
 #include <driver/ring_buffer.h>
-#include <system_init.h>
 #include <json/json.h>
 #include <json/json_parser.h>
 
@@ -13,6 +12,7 @@ void TEST_JSON_STRING()
 {
     printf("--- TEST_JSON_STRING ---\r\n");
     memset(buffer, 0, MAX_NO_OF_BUFFER);
+    Buffer *rxBuf = get_uart_rx_buffer();
     
     // init value to write
     char *bytesWrite = "\"abcdef123\"\r\n";
@@ -33,32 +33,34 @@ void TEST_JSON_STRING()
     for(i = 0; i < bytesWritten; i++)
     {
         byte = buffer[i];
-        buffer_write_one_byte(&rxBuf, byte);
+        buffer_write_one_byte(rxBuf, byte);
     }    
     
     printf("json string output: \r\n");
     // parser json string
-    JsonSchema *jsonSchema = get_json_schema();
-    if(json_parser(jsonSchema, &rxBuf))
-    {
-        if(jsonSchema->type == JSON_TYPE_STRING)
+    JsonType jsonType = get_json_type(rxBuf);
+    
+        if(jsonType == JSON_TYPE_STRING)
         {
             // print out json_parser result
-            printf("jsonSchema type: %d\r\n", jsonSchema->type);
-            printf("jsonSchema idx: %d\r\n", jsonSchema->idx);
-            printf("jsonSchema buff in HEX: \r\n");
+            printf("jsonSchema type: %d\r\n", jsonType);
+//             printf("jsonSchema idx: %d\r\n", jsonSchema->idx);
+//             printf("jsonSchema buff in HEX: \r\n");
 
-            int j = jsonSchema->idx;
-            for(i = 0; i < j; i++)
-            {
-                printf(" %x", jsonSchema->buff[i]);
-            }
-            jsonSchema->buff[jsonSchema->idx] = '\0';
-            printf("\r\n");
-            printf("string out: %s\r\n", jsonSchema->buff);
+//             int j = jsonSchema->idx;
+//             for(i = 0; i < j; i++)
+//             {
+//                 printf(" %x", jsonSchema->buff[i]);
+//             }
+//             jsonSchema->buff[jsonSchema->idx] = '\0';
+//             printf("\r\n");
+//             printf("string out: %s\r\n", jsonSchema->buff);
         }
-    }    
-}
+        else
+        {
+            error("PARSER FALSE\r\n");
+        }
+}   
 
 int main()
 {

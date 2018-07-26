@@ -3,12 +3,10 @@
 
 #include <stdbool.h>
 #include <ctype.h>
-#include <debug.h>
 #include <json/json.h>
-#include <driver/ring_buffer.h>
+#include <driver/driver.h>
 
-int json_parser(JsonSchema *jsonSchema, BufferPtr uartRxBuffer);
+JsonType get_json_type(Buffer *inBuff);
 JsonConsume consume_char(char c, JsonConsume jsonConsume);
-
 
 #endif // JSON_PARSER_H

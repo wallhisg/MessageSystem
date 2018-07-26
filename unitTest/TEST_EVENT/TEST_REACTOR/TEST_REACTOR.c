@@ -13,14 +13,14 @@ int main()
 
 //     handle.event.value = (REVENT_READ_ADC << 8) | EVENT_WRITE_REGISTER;
     handle.eds.event.fields.et = ET_READ;
-    handle.eds.event.fields.pt = PT_UART;
+    handle.eds.event.fields.pt = PT_RX_UART;
     handle.timerPreset = 10;
-    handle.persistent = false;
-    handle.buff.address = 0x55;
-    handle.buff.value = 0xAA;
+    handle.persistent = TRIBOOL_FALSE;
+    handle.ad.address = 0x55;
+    handle.ad.value = 0xAA;
 
     create_event(handle);
-    handle.persistent = true;
+    handle.persistent = TRIBOOL_TRUE;
     create_event(handle);
 
     Event *event0 = get_system_event(0);

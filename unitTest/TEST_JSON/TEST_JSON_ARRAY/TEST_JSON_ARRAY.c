@@ -1,10 +1,7 @@
 #include <driver/ring_buffer.h>
-#include <system_init.h>
 #include <json/json.h>
 #include <json/json_parser.h>
 #include <json/json_parser_object.h>
-
-extern Buffer rxBuf;
 
 #define MAX_NO_OF_BUFFER    64
 static char buffer[MAX_NO_OF_BUFFER];
@@ -14,6 +11,7 @@ void TEST_JSON_ARRAY(char *bytesWrite)
 {
     printf("--- TEST_JSON_ARRAY ---\r\n");
     memset(buffer, 0, MAX_NO_OF_BUFFER);
+    Buffer *rxBuf = get_uart_rx_buffer();
     
     uint8_t bytesWritten = strlen(bytesWrite);
 
@@ -33,27 +31,19 @@ void TEST_JSON_ARRAY(char *bytesWrite)
     for(i = 0; i < bytesWritten; i++)
     {
         byte = buffer[i];
-        buffer_write_one_byte(&rxBuf, byte);
+        buffer_write_one_byte(rxBuf, byte);
     }    
     
     printf("json string output: \r\n");
     
     // parser json string
-    JsonSchema *jsonSchema = get_json_schema();
-    
-    if(json_parser(jsonSchema, &rxBuf))
+    JsonType jsonType = get_json_type(rxBuf);
+
+    if(jsonType == JSON_TYPE_ARRAY)
     {
-
-        if(jsonSchema->type == JSON_TYPE_ARRAY)
-        {
-            // print out json_parser result
-            printf("jsonSchema type: %d\r\n", jsonSchema->type);
-            printf("jsonSchema idx: %d\r\n", jsonSchema->idx);
-            printf("jsonSchema buff: \r\n");
-            printf(" %s", jsonSchema->buff);
-        }
-
-        if(json_parser_object(jsonSchema))
+        printf("Json type : %d\r\n", jsonType);
+        Buffer *buff = get_json_buffer();
+        if(json_parser_object(buff))
         {
 
             int counter = 0;
@@ -74,12 +64,11 @@ void TEST_JSON_ARRAY(char *bytesWrite)
             counter = get_no_of_json_object();
             printf("get_no_of_json_object: %d\r\n", counter);
         }
-
+        else
+        {
+            error("PARSER FALSE\r\n");
+        }
     }    
-    else
-    {
-        printf("parser false\r\n");
-    }
 }
 
 int main()
@@ -90,8 +79,8 @@ int main()
     char *bytesWrite1 = "{\"a\":[\"X\",\"Y\",\"Z\"],\"b\":[\"W\",\"X\",\"H\"]}\r\n";
     TEST_JSON_ARRAY(bytesWrite1);
     printf("\r\n");
-    system_init();
-    json_init();
+//     system_init();
+//     json_init();
     char *bytesWrite2 = "{\"a\":[\"X\",\"Y\",\"Z\"],\"b\":\"1\"}\r\n";
     TEST_JSON_ARRAY(bytesWrite2);
 //    char *bytesWrite = "{\"enum\":[\"residential\",\"business\"]}\r\n";

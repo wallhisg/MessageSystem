@@ -1,0 +1,73 @@
+#include <driver/ring_buffer.h>
+#include <json/json.h>
+#include <json/json_parser.h>
+#include <json/json_parser_object.h>
+#include <json/json_reader.h>
+
+#define MAX_NO_OF_BUFFER    64
+static char buffer[MAX_NO_OF_BUFFER];
+volatile uint16_t bytesWritten = 0;
+
+void TEST_JSON_OBJECT_READ(char *bytesWrite)
+{
+    printf("--- TEST_JSON_OBJECT_READ ---\r\n");
+    memset(buffer, 0, MAX_NO_OF_BUFFER);
+    Buffer *rxBuf = get_uart_rx_buffer();
+    
+    uint8_t bytesWritten = strlen(bytesWrite);
+
+    memcpy(buffer, bytesWrite, bytesWritten);
+    
+    printf("json string input in CHAR: %s\r\n", bytesWrite);
+
+    int i = 0;
+    char byte = 0;    
+    for(i = 0; i < bytesWritten; i++)
+    {
+        byte = buffer[i];
+        buffer_write_one_byte(rxBuf, byte);
+    }    
+    
+    printf("json string output: \r\n");
+    
+    // parser json object
+    JsonType jsonType = get_json_type(rxBuf);
+    
+    if(jsonType == JSON_TYPE_OBJECT)
+    {
+        printf("Json type : %d\r\n", jsonType);
+        Buffer *buff = get_json_buffer();
+        if(json_object_read_description(buff))
+        {
+
+        }
+        else
+        {
+            error("PARSER OBJECT FALSE\r\n");
+        }
+    }   
+    else
+    {
+        error("PARSER FALSE\r\n");
+    }
+}
+
+int main()
+{
+    system_init();
+    json_init();
+
+
+    // init values to write
+    char *obj1 = "{\"d\":\"1\",\"b\":\"2\"}\r\n";
+    TEST_JSON_OBJECT_READ(obj1);
+    
+//     char *obj2 = "{\"a\":{\"X\":\"1\",\"Y\":\"1\"},\"b\":{\"Z\":\"1\"}}\r\n";
+//     TEST_JSON_OBJECT_READ(obj2);
+// 
+//     char *obj3 = "{\"a\":{\"X\":\"1\",\"Y\":\"1\"},\"b\":\"1\"}\r\n";
+//     TEST_JSON_OBJECT_READ(obj3);
+
+    
+    return 0;
+}

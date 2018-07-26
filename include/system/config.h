@@ -12,17 +12,17 @@
 typedef struct {
     uint8_t value;
     uint8_t address;
-} EventBuff;
+} AddressValue, *AddressValuePtr;
 #elif ((MCU_08_BIT_DATA) & (MCU_16_BIT_ADDRESS))
 typedef struct {
     uint8_t value;
     uint16_t data;
-} EventBuff;
+} AddressValue, *AddressValuePtr;
 #elif ((MCU_16_BIT_DATA) & (MCU_16_BIT_ADDRESS))
 typedef struct {
     uint8_t value;
     uint16_t data;
-} EventBuff;
+} AddressValue, *AddressValuePtr;
 #endif
 
 

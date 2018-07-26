@@ -7,19 +7,20 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <system/system.h>
+#include <driver/ring_buffer.h>
 
 #define LF      0x0A    //  '\n' - New Line
 #define CR      0x0D    //  '\r' - Enter
 
 // SYSTEM MESSAGE
 // define TYPE JSON
-#define MAX_NO_OF_JSON_OBJECT   0x04
+#define MAX_NO_OF_JSON_OBJECT   0x08
 #define MSG_TYPE_JSON           0x80
 #define MSG_TYPE_JSON_STRING    0x81
 #define MSG_TYPE_JSON_OBJECT    0x82
 #define MSG_TYPE_JSON_ARRAY     0x83
 
-#define MAX_NO_OF_JSON_BUFFER       128
+#define MAX_NO_OF_JSON_BUFFER       64
 #define JSON_OBJECT_KEY_LENGTH      64
 #define JSON_OBJECT_VALUE_LENGTH    64
 
@@ -40,6 +41,8 @@ typedef enum {
     JSON_OBJECT_INDERERMINATE,
     JSON_OBJECT_NEW,
     JSON_OBJECT_KEY,
+    JSON_OBJECT_KEY_NEW,
+    JSON_OBJECT_KEY_END,
     JSON_OBJECT_VALUE,
     JSON_OBJECT_END
 } JsonObjectState;
@@ -64,12 +67,6 @@ typedef struct {
     TriBool tribool;
     JsonType type;
 } JSonTupleFlag;
-
-typedef struct {
-    char *buff;
-    JsonType type;
-    int idx;
-} JsonSchema, *JsonSchemaPtr;
 
 typedef char *JsonString;
 
@@ -98,9 +95,12 @@ typedef struct JsonConsume{
 } JsonConsume;
 
 void json_init();
-void clear_buffer(char *buff, size_t size);
+void write_one_byte_to_json_buffer(char byte);
+char read_one_byte_from_json_buffer();
 
-JsonSchema *get_json_schema();
+Buffer *get_json_buffer();
+
+void clear_buffer(char *buff, size_t size);
 
 bool is_tok_letter(const char c);
 

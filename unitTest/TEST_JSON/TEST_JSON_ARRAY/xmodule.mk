@@ -1,4 +1,4 @@
-LOCAL_BASE	:= unitTest/TEST_EVENT/TEST_REACTOR
+LOCAL_BASE	:= unitTest/TEST_JSON/TEST_JSON_ARRAY
 LOCAL_MDLS	:=
 LOCAL_BLDS	:= $(addprefix $(LOCAL_BASE)/, $(LOCAL_MDLS))
 
@@ -8,22 +8,22 @@ LOCAL_INCS	+= $(wildcard $(INCLUDE_DIRS)/$(LOCAL_MDLS)/*.h)
 LOCAL_SRCS	:= $(wildcard $(LOCAL_BASE)/*.c)
 LOCAL_SRCS	+= $(foreach sdir, $(LOCAL_BLDS), $(wildcard $(sdir)/*.c))
 
-REACTOR_OBJS	:= $(patsubst %.c, %.o, $(LOCAL_SRCS))
+ARRAY_OBJS	:= $(patsubst %.c, %.o, $(LOCAL_SRCS))
 LOCAL_DEPS	:= $(patsubst %.c, %.deps, $(LOCAL_SRCS))
 
-TMPS		+= $(REACTOR_OBJS)
+TMPS		+= $(ARRAY_OBJS)
 DEPS		+= $(LOCAL_DEPS)
 
-TARGET		:= TEST_EVENT_REACTOR_EXE
-TEST_REACTOR	:= $(addprefix $(LOCAL_BASE)/, $(TARGET))
-TESTS		+= $(TEST_REACTOR)
+TARGET		:= TEST_JSON_ARRAY_EXE
+TEST_ARRAY	:= $(addprefix $(LOCAL_BASE)/, $(TARGET))
+TESTS		+= $(TEST_ARRAY)
 
 $(LOCAL_DEPS): $(LOCAL_SRCS) $(LOCAL_INCS)
 	@$(CC) -MM $< > $@
+	@$(CC) $< -MM -MT $@ >> $@
 
-$(TEST_BUFF_OBJS): $(LOCAL_SRCS) $(LOCAL_DEPS)
+$(ARRAY_OBJS): $(LOCAL_SRCS) $(LOCAL_DEPS)
 
-$(TEST_REACTOR): $(REACTOR_OBJS) $(OBJS) $(LIBS)
-	$(CC) $(REACTOR_OBJS) $(OBJS) $(LIBS) -o $@
-
+$(TEST_ARRAY): $(ARRAY_OBJS) $(OBJS) $(LIBS)
+	$(CC) $(ARRAY_OBJS) $(OBJS) $(LIBS) -o $@
 

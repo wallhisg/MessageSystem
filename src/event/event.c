@@ -23,7 +23,6 @@ void event_init()
 void create_event(Handle handle)
 {
     int eventSlot = find_free_event_slot();
-     printf("eventSlot %d\r\n", eventSlot);
 
     if(eventSlot >= 0)
     {
@@ -37,7 +36,6 @@ void create_event(Handle handle)
         
         event->notifier.events = &SYSTEM_EVENT;
         event->notifier.onEventClosed = on_closed_event;
-        printf("Handle address - create_event %p\r\n", &event->handle);
         regist_event(&event->eventHandler);
     }
     else
@@ -46,12 +44,10 @@ void create_event(Handle handle)
 
 void on_closed_event(void *closedEvent)
 {
-    debug_message("on_closed_event");
     EventHandler *eventHandler = closedEvent;
     int eventHandlerSlot = find_matching_eventHandler_slot(eventHandler);
 
-//     debug("on_closed_event - eventHandlerSlot: %d\r\n", eventHandlerSlot);
-//     debug("on_closed_event - eventHandler address: %p\r\n", eventHandler);
+    debug("on_closed_event - eventHandlerSlot: %d\r\n", eventHandlerSlot);
 
     if(eventHandlerSlot < 0)
     {
@@ -66,12 +62,12 @@ void on_closed_event(void *closedEvent)
 void destroy_event(Event *event)
 {
     Handle handle = event->handle;
-    if(handle.persistent == false)
+    if(handle.persistent == TRIBOOL_FALSE)
     {
         unregist_event(&event->eventHandler);
         event->handle.eds.event.value = 0;
     }
-    else
+    else 
     {
         reload_event(&event->eventHandler);
     }
@@ -134,8 +130,6 @@ Event *get_system_event(const int i)
 
 void event_demultiplexer(void *instance)
 {
-    printf("event_demultiplexer\r\n");
-
     Handle *handle = get_handle_by_pointer(instance);
     Event *event = instance;
     
@@ -149,8 +143,8 @@ EventDescription event_description(uint8_t REVENT_ET, uint8_t REVENT_PT,
                                    uint8_t EVENT_ET, uint8_t EVENT_PT)
 {
     EventDescription eds;
-    eds.revent.value = (REVENT_ET << 5 | REVENT_PT);
-    eds.event.value = (EVENT_ET << 5 | EVENT_PT);
+    eds.revent.value = (REVENT_ET << 8 | REVENT_PT);
+    eds.event.value = (EVENT_ET << 8 | EVENT_PT);
     return eds;
 }
 

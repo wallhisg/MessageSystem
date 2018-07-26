@@ -15,7 +15,7 @@ void dispatch_signalled_events(EventHandler *eventHandlerPool[], const int noOfM
 
 void regist_event(EventHandler* eventHandler)
 {
-//     debug_message("regist_event");
+     debug_message("regist_event");
     if(eventHandler != NULL)
     {
         if(!add_to_registry(eventHandler))
@@ -27,7 +27,7 @@ void regist_event(EventHandler* eventHandler)
 
 void unregist_event(EventHandler* eventHandler)
 {
-//     debug_message("unregist_event");
+    debug_message("unregist_event");
     if(eventHandler != NULL)
     {
         if(!remove_from_registry(eventHandler))
@@ -54,8 +54,6 @@ void handle_events(void)
     EventHandler *eventHandlerPool[MAX_NO_OF_HANDLES];
 
     const int noOfHandles = build_eventHandler_pool(eventHandlerPool);
-    
-    printf("noOfHandles %d\r\n", noOfHandles);
     
     if(noOfHandles > 0)
     {

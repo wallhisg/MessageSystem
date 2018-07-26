@@ -14,7 +14,7 @@ Name=GCC
 1=/home/wall/Dropbox/projects/MessageSystem/MessageSystem/include
 
 [Filters]
-size=40
+size=55
 
 [Filters][0]
 inclusive=0
@@ -191,10 +191,85 @@ inclusive=0
 pattern=CVS
 targets=2
 
+[Filters][40]
+inclusive=0
+pattern=mem_program
+targets=3
+
+[Filters][41]
+inclusive=0
+pattern=mem_test
+targets=3
+
+[Filters][42]
+inclusive=0
+pattern=test
+targets=3
+
+[Filters][43]
+inclusive=0
+pattern=TEST_MESSAGE_ENDPOINT_EXE
+targets=3
+
+[Filters][44]
+inclusive=0
+pattern=TEST_EVENT_REACTOR_EXE
+targets=3
+
+[Filters][45]
+inclusive=0
+pattern=TEST_HANDLE_EVENT_EXE
+targets=3
+
+[Filters][46]
+inclusive=0
+pattern=TEST_EVENT_DESCRIPTION_EXE
+targets=3
+
+[Filters][47]
+inclusive=0
+pattern=TEST_RING_BUFFER_EXE
+targets=3
+
+[Filters][48]
+inclusive=0
+pattern=TEST_UART_EXE
+targets=3
+
+[Filters][49]
+inclusive=0
+pattern=TEST_JSON_STRING_EXE
+targets=3
+
 [Filters][5]
 inclusive=0
 pattern=.svn
 targets=2
+
+[Filters][50]
+inclusive=0
+pattern=TEST_JSON_OBJECT_EXE
+targets=3
+
+[Filters][51]
+inclusive=0
+pattern=TEST_JSON_ARRAY_EXE
+targets=3
+
+[Filters][52]
+inclusive=0
+pattern=TEST_JSON_OBJECT_ARRAY_EXE
+targets=3
+
+[Filters][53]
+inclusive=0
+pattern=TEST_MESSAGE_ENDPOINT_EXE
+targets=3
+
+[Filters][54]
+inclusive=0
+pattern=TEST_JSON_OBJECT_READ_EXE
+targets=3
 
 [Filters][6]
 inclusive=0
@@ -217,7 +292,7 @@ pattern=.hg
 targets=2
 
 [Launch]
-Launch Configurations=Launch Configuration 0,Launch Configuration 1,Launch Configuration 2,Launch Configuration 3,Launch Configuration 4,Launch Configuration 5,Launch Configuration 6
+Launch Configurations=Launch Configuration 0,Launch Configuration 1,Launch Configuration 2,Launch Configuration 3,Launch Configuration 4,Launch Configuration 5,Launch Configuration 6,Launch Configuration 7,Launch Configuration 8,Launch Configuration 9,Launch Configuration 10,Launch Configuration 11,Launch Configuration 12,Launch Configuration 13
 
 [Launch][Launch Configuration 0]
 Configured Launch Modes=execute
@@ -249,7 +324,79 @@ Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
 Dependency Action=Nothing
 EnvironmentGroup=
 Executable=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
-External Terminal=make TEST_MESSAGE_ENDPOINT
+External Terminal=make TEST_MESSAGE_ENDPOINT_EXE
+Project Target=
+Use External Terminal=true
+Working Directory=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+isExecutable=true
+
+[Launch][Launch Configuration 10]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=TEST_JSON_OBJECT
+Type=Native Application
+
+[Launch][Launch Configuration 10][Data]
+Arguments=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
+EnvironmentGroup=
+Executable=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+External Terminal=make TEST_JSON_OBJECT_EXE
+Project Target=
+Use External Terminal=true
+Working Directory=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+isExecutable=true
+
+[Launch][Launch Configuration 11]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=TEST_JSON_ARRAY
+Type=Native Application
+
+[Launch][Launch Configuration 11][Data]
+Arguments=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
+EnvironmentGroup=
+Executable=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+External Terminal=make TEST_JSON_ARRAY_EXE
+Project Target=
+Use External Terminal=true
+Working Directory=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+isExecutable=true
+
+[Launch][Launch Configuration 12]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=TEST_JSON_OBJECT_ARRAY
+Type=Native Application
+
+[Launch][Launch Configuration 12][Data]
+Arguments=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
+EnvironmentGroup=
+Executable=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+External Terminal=make TEST_JSON_OBJECT_ARRAY_EXE
+Project Target=
+Use External Terminal=true
+Working Directory=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+isExecutable=true
+
+[Launch][Launch Configuration 13]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=TEST_JSON_OBJECT_READ
+Type=Native Application
+
+[Launch][Launch Configuration 13][Data]
+Arguments=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
+EnvironmentGroup=
+Executable=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+External Terminal=make TEST_JSON_OBJECT_READ_EXE
 Project Target=
 Use External Terminal=true
 Working Directory=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
@@ -267,7 +414,7 @@ Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
 Dependency Action=Nothing
 EnvironmentGroup=
 Executable=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
-External Terminal=make TEST_EVENT_REACTOR
+External Terminal=make TEST_EVENT_REACTOR_EXE
 Project Target=
 Use External Terminal=true
 Working Directory=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
@@ -285,7 +432,7 @@ Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
 Dependency Action=Nothing
 EnvironmentGroup=
 Executable=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
-External Terminal=make TEST_HANDLE_EVENT
+External Terminal=make TEST_HANDLE_EVENT_EXE
 Project Target=
 Use External Terminal=true
 Working Directory=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
@@ -339,7 +486,61 @@ Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
 Dependency Action=Nothing
 EnvironmentGroup=
 Executable=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
-External Terminal=make TEST_EVENT_DESCRIPTION
+External Terminal=make TEST_EVENT_DESCRIPTION_EXE
+Project Target=
+Use External Terminal=true
+Working Directory=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+isExecutable=true
+
+[Launch][Launch Configuration 7]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=TEST_RING_BUFFER
+Type=Native Application
+
+[Launch][Launch Configuration 7][Data]
+Arguments=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
+EnvironmentGroup=
+Executable=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+External Terminal=make TEST_RING_BUFFER_EXE
+Project Target=
+Use External Terminal=true
+Working Directory=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+isExecutable=true
+
+[Launch][Launch Configuration 8]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=TEST_UART
+Type=Native Application
+
+[Launch][Launch Configuration 8][Data]
+Arguments=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
+EnvironmentGroup=
+Executable=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+External Terminal=make TEST_UART_EXE
+Project Target=
+Use External Terminal=true
+Working Directory=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+isExecutable=true
+
+[Launch][Launch Configuration 9]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=TEST_JSON_STRING
+Type=Native Application
+
+[Launch][Launch Configuration 9][Data]
+Arguments=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
+EnvironmentGroup=
+Executable=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem
+External Terminal=make TEST_JSON_STRING_EXE
 Project Target=
 Use External Terminal=true
 Working Directory=file:///home/wall/Dropbox/projects/MessageSystem/MessageSystem

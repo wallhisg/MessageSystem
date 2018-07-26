@@ -1,10 +1,8 @@
 #include <driver/ring_buffer.h>
-#include <system_init.h>
 #include <json/json.h>
 #include <json/json_parser.h>
 #include <json/json_parser_object.h>
 
-extern Buffer rxBuf;
 
 #define MAX_NO_OF_BUFFER    64
 static char buffer[MAX_NO_OF_BUFFER];
@@ -14,6 +12,7 @@ void TEST_JSON_OBJECT(char *bytesWrite)
 {
     printf("--- TEST_JSON_OBJECT ---\r\n");
     memset(buffer, 0, MAX_NO_OF_BUFFER);
+    Buffer *rxBuf = get_uart_rx_buffer();
     
     uint8_t bytesWritten = strlen(bytesWrite);
 
@@ -26,27 +25,19 @@ void TEST_JSON_OBJECT(char *bytesWrite)
     for(i = 0; i < bytesWritten; i++)
     {
         byte = buffer[i];
-        buffer_write_one_byte(&rxBuf, byte);
+        buffer_write_one_byte(rxBuf, byte);
     }    
     
     printf("json string output: \r\n");
     
-    // parser json string
-    JsonSchema *jsonSchema = get_json_schema();
-    
-    if(json_parser(jsonSchema, &rxBuf))
+    // parser json array
+    JsonType jsonType = get_json_type(rxBuf);
+
+    if(jsonType == JSON_TYPE_OBJECT)
     {
-
-        if(jsonSchema->type == JSON_TYPE_OBJECT)
-        {
-            // print out json_parser result
-            printf("jsonSchema type: %d\r\n", jsonSchema->type);
-            printf("jsonSchema idx: %d\r\n", jsonSchema->idx);
-            printf("jsonSchema buff: \r\n");
-            printf(" %s", jsonSchema->buff);
-        }
-
-        if(json_parser_object(jsonSchema))
+            printf("Json type : %d\r\n", jsonType);
+        Buffer *buff = get_json_buffer();
+        if(json_parser_object(buff))
         {
             int counter = 0;
             counter = get_no_of_json_object();
@@ -66,11 +57,11 @@ void TEST_JSON_OBJECT(char *bytesWrite)
             counter = get_no_of_json_object();
             printf("get_no_of_json_object: %d\r\n", counter);
         }
+        else
+        {
+            error("PARSER FALSE\r\n");
+        }
     }    
-    else
-    {
-        printf("parser false\r\n");
-    }
 }
 
 int main()
@@ -79,16 +70,16 @@ int main()
     json_init();
     // init value to write
 //     char *obj1 = "{\"a\":\"1\",\"b\":\"2\"}\r\n";
-    char *obj1 = "{\"name\":\"Jack\",\"age\":\"27\"}";
+    char *obj1 = "{\"name\":\"Jack\",\"age\":\"27\"}\r\n";
     TEST_JSON_OBJECT(obj1);
 
-    system_init();
-    json_init();
+//    system_init();
+   json_init();
     char *obj2 = "{\"a\":{\"X\":\"1\",\"Y\":\"1\"},\"b\":{\"Z\":\"1\"}}\r\n";
     TEST_JSON_OBJECT(obj2);
 
-    system_init();
-    json_init();
+//    system_init();
+   json_init();
     char *obj3 = "{\"a\":{\"X\":\"1\",\"Y\":\"1\"},\"b\":\"1\"}\r\n";
     TEST_JSON_OBJECT(obj3);
     

@@ -11,9 +11,9 @@ JsonConsume tok_obj_r_curly(const char c, JsonConsume objConsume);
 JsonConsume tok_obj_l_bracket(const char c, JsonConsume objConsume);
 JsonConsume tok_obj_r_bracket(const char c, JsonConsume objConsume);
 
-bool json_parser_object(JsonSchema *jsonSchema)
+
+bool json_parser_object(Buffer *inBuff)
 {
-    JsonSchema *schema = jsonSchema;
     bool result = false;
 
     JsonConsume objConsume;
@@ -24,14 +24,12 @@ bool json_parser_object(JsonSchema *jsonSchema)
     uint8_t keyIdx = 0;
     uint8_t valIdx = 0;
 
-    uint8_t begin = 0;
-    uint8_t end = schema->idx;
+    char byte = ' ';
 
-    char byte;
-
-    for(begin = 0; begin <= end; ++begin)
+    while((inBuff->status != RING_STATUS_EMPTY) && (byte != LF))
     {
-        byte = jsonSchema->buff[begin];
+//         byte = read_one_byte_from_json_buffer();
+        byte = buffer_read_one_byte(inBuff);
         objConsume = consume_object(byte, objConsume);
 
         if(objConsume.state == JSON_OBJECT_NEW)
@@ -60,12 +58,12 @@ bool json_parser_object(JsonSchema *jsonSchema)
 
         if ((objConsume.tribool == TRIBOOL_TRUE) && (objConsume.state == JSON_OBJECT_KEY))
         {
-            debug("KEY: byte: %c\r\n", byte);
+            debug_json("KEY: byte: %c\r\n", byte);
             keyValue.key[keyIdx++] = byte;
         }
         else if ((objConsume.tribool == TRIBOOL_TRUE) && (objConsume.state = JSON_OBJECT_VALUE))
         {
-            debug("VALUE: byte: %c\r\n", byte);
+            debug_json("VALUE: byte: %c\r\n", byte);
             keyValue.value[valIdx++] = byte;
         }
     }
@@ -76,7 +74,7 @@ bool json_parser_object(JsonSchema *jsonSchema)
         result = false;
     }
 
-//    debug("result %lu\r\n", result);
+//    debug_json("result %lu\r\n", result);
     return result;
 }
 
@@ -85,14 +83,15 @@ JsonConsume consume_object(const char c, JsonConsume objConsume)
 
     JsonConsume consume;
     consume = objConsume.nextTok(c, objConsume);
-    debug("consume_char: %c : >> ", c);
+    debug_json("consume_char: %c : >> ", c);
     return consume;
 }
 
 JsonConsume tok_obj_letter_start(const char c, JsonConsume objConsume)
 {
 
-    debug_message("tok_obj_letter_start\r\n");
+    printf("tok_obj_letter_start\r\n");
+    debug_json("tok_obj_letter_start\r\n");
     JsonConsume consume = objConsume;
 
     switch (c) {
@@ -116,7 +115,7 @@ JsonConsume tok_obj_letter_start(const char c, JsonConsume objConsume)
 // CASE "
 JsonConsume tok_obj_dq_mark(const char c, JsonConsume objConsume)
 {
-    debug_message("tok_obj_dq_mark");
+    debug_json("tok_obj_dq_mark");
 
     JsonConsume consume = objConsume;
 
@@ -193,7 +192,7 @@ JsonConsume tok_obj_dq_mark(const char c, JsonConsume objConsume)
 // CASE :
 JsonConsume tok_obj_colon(const char c, JsonConsume objConsume)
 {
-    debug_message("tok_obj_colon");
+    debug_json("tok_obj_colon");
 
     JsonConsume consume = objConsume;
 
@@ -240,7 +239,7 @@ JsonConsume tok_obj_colon(const char c, JsonConsume objConsume)
 // CASE ,
 JsonConsume tok_obj_comma(const char c, JsonConsume objConsume)
 {
-    debug_message("tok_obj_comma");
+    debug_json("tok_obj_comma");
 
     JsonConsume consume = objConsume;
 
@@ -271,7 +270,7 @@ JsonConsume tok_obj_comma(const char c, JsonConsume objConsume)
 // CASE {
 JsonConsume tok_obj_l_curly(const char c, JsonConsume objConsume)
 {
-    debug_message("tok_obj_l_curly");
+    debug_json("tok_obj_l_curly");
 
     JsonConsume consume = objConsume;
 
@@ -298,7 +297,7 @@ JsonConsume tok_obj_l_curly(const char c, JsonConsume objConsume)
 // CASE }
 JsonConsume tok_obj_r_curly(const char c, JsonConsume objConsume)
 {
-    debug_message("tok_obj_r_curly");
+    debug_json("tok_obj_r_curly");
 
     JsonConsume consume = objConsume;
 
@@ -332,7 +331,7 @@ JsonConsume tok_obj_r_curly(const char c, JsonConsume objConsume)
 // CASE A -> Z, 0 -> 1
 JsonConsume tok_obj_letter(const char c, JsonConsume objConsume)
 {
-    debug_message("tok_obj_letter");
+    debug_json("tok_obj_letter");
 
     JsonConsume consume = objConsume;
 
@@ -372,7 +371,7 @@ JsonConsume tok_obj_letter(const char c, JsonConsume objConsume)
 
 JsonConsume tok_obj_l_bracket(const char c, JsonConsume objConsume)
 {
-    debug_message("tok_obj_l_bracket");
+    debug_json("tok_obj_l_bracket");
 
     JsonConsume consume = objConsume;
 
@@ -396,7 +395,7 @@ JsonConsume tok_obj_l_bracket(const char c, JsonConsume objConsume)
 
 JsonConsume tok_obj_r_bracket(const char c, JsonConsume objConsume)
 {
-    debug_message("tok_obj_r_bracket");
+    debug_json("tok_obj_r_bracket");
 
     JsonConsume consume = objConsume;
 
