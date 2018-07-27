@@ -7,7 +7,7 @@
 
 
 bool json_parser_object(Buffer *inBuff);
-JsonConsume consume_object(const char c, JsonConsume objConsume);
+JsonConsume consume_object(const char c, JsonConsume *objConsume);
 
 
 

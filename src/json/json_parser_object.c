@@ -1,15 +1,15 @@
 #include <string.h>
 #include <json/json_parser_object.h>
 
-JsonConsume tok_obj_letter_start(const char c, JsonConsume objConsume);
-JsonConsume tok_obj_dq_mark(const char c, JsonConsume objConsume);
-JsonConsume tok_obj_colon(const char c, JsonConsume objConsume);
-JsonConsume tok_obj_comma(const char c, JsonConsume objConsume);
-JsonConsume tok_obj_l_curly(const char c, JsonConsume objConsume);
-JsonConsume tok_obj_r_curly(const char c, JsonConsume objConsume);
-JsonConsume tok_obj_l_bracket(const char c, JsonConsume objConsume);
-JsonConsume tok_obj_r_bracket(const char c, JsonConsume objConsume);
-JsonConsume tok_obj_letter(const char c, JsonConsume objConsume);
+JsonConsume tok_obj_letter_start(const char c, JsonConsume *objConsume);
+JsonConsume tok_obj_dq_mark(const char c, JsonConsume *objConsume);
+JsonConsume tok_obj_colon(const char c, JsonConsume *objConsume);
+JsonConsume tok_obj_comma(const char c, JsonConsume *objConsume);
+JsonConsume tok_obj_l_curly(const char c, JsonConsume *objConsume);
+JsonConsume tok_obj_r_curly(const char c, JsonConsume *objConsume);
+JsonConsume tok_obj_l_bracket(const char c, JsonConsume *objConsume);
+JsonConsume tok_obj_r_bracket(const char c, JsonConsume *objConsume);
+JsonConsume tok_obj_letter(const char c, JsonConsume *objConsume);
 JsonObjectState next_json_object_state(JsonObjectState objState);
 
 bool json_parser_object(Buffer *inBuff)
@@ -18,7 +18,7 @@ bool json_parser_object(Buffer *inBuff)
 
     JsonConsume objConsume;
     json_consume_init(&objConsume);
-    objConsume.nextTok = tok_obj_letter_start;
+    objConsume.nextTok = (void *)tok_obj_letter_start;
     objConsume.state = JSON_OBJECT_NEW;
 
     JsonValue keyValue;
@@ -30,7 +30,7 @@ bool json_parser_object(Buffer *inBuff)
     while((inBuff->status != RING_STATUS_EMPTY) && (byte != LF))
     {
         byte = buffer_read_one_byte(inBuff);
-        objConsume = consume_object(byte, objConsume);
+        objConsume = consume_object(byte, &objConsume);
 
         if(objConsume.state == JSON_OBJECT_KEY)
         {
@@ -77,11 +77,11 @@ bool json_parser_object(Buffer *inBuff)
     return result;
 }
 
-JsonConsume consume_object(const char c, JsonConsume objConsume)
+JsonConsume consume_object(const char c, JsonConsume *objConsume)
 {
     JsonConsume consume;
-//    printf("TRUOC - objConsume.state: %d\r\n", objConsume.state);
-    consume = objConsume.nextTok(c, objConsume);
+//    printf("TRUOC - objConsume.state: %d\r\n", objConsume->state);
+    consume = objConsume->nextTok(c, objConsume);
 //    printf("\r\b");
 //    printf("Char: %c\r\n", c);
 //    printf("SAU - objConsume.state: %d\r\n", consume.state);
@@ -90,101 +90,101 @@ JsonConsume consume_object(const char c, JsonConsume objConsume)
     return consume;
 }
 
-JsonConsume tok_obj_letter_start(const char c, JsonConsume objConsume)
+JsonConsume tok_obj_letter_start(const char c, JsonConsume *objConsume)
 {
     debug_message("tok_obj_letter_start\r\n");
-    JsonConsume consume = objConsume;
+    JsonConsume *consume = objConsume;
 
     switch (c) {
         case '\"' :
         {
-            consume.nextTok = tok_obj_dq_mark;
-            consume.tribool = TRIBOOL_INDETERMINATE;
-            consume.state = next_json_object_state(consume.state);
+            consume->nextTok = (void *)tok_obj_dq_mark;
+            consume->tribool = TRIBOOL_INDETERMINATE;
+            consume->state = next_json_object_state(consume->state);
             break;
         }
         default:
         {
-            consume.tribool = TRIBOOL_FALSE;
+            consume->tribool = TRIBOOL_FALSE;
             break;
         }
     }
 
-    return consume;
+    return *consume;
 }
 
 // CASE "
-JsonConsume tok_obj_dq_mark(const char c, JsonConsume objConsume)
+JsonConsume tok_obj_dq_mark(const char c, JsonConsume *objConsume)
 {
     debug_message("tok_obj_dq_mark");
-    JsonConsume consume = objConsume;
+    JsonConsume *consume = objConsume;
 
     switch (c) {
         case ':' :
         {
-            consume.nextTok = tok_obj_colon;
-            if(consume.isObjects)
+            consume->nextTok = (void *)tok_obj_colon;
+            if(consume->isObjects)
             {
-                consume.tribool = TRIBOOL_TRUE;
+                consume->tribool = TRIBOOL_TRUE;
             }
             else
             {
-                consume.state = next_json_object_state(consume.state);
-                consume.tribool = TRIBOOL_INDETERMINATE;
+                consume->state = next_json_object_state(consume->state);
+                consume->tribool = TRIBOOL_INDETERMINATE;
             }
             break;
         }
         case ',':
         {
-            consume.nextTok = tok_obj_comma;
-            if(consume.isObjects)
+            consume->nextTok = (void *)tok_obj_comma;
+            if(consume->isObjects)
             {
-                consume.tribool = TRIBOOL_TRUE;
+                consume->tribool = TRIBOOL_TRUE;
             }
             else
             {
-                consume.state = next_json_object_state(consume.state);
-                consume.tribool = TRIBOOL_INDETERMINATE;
+                consume->state = next_json_object_state(consume->state);
+                consume->tribool = TRIBOOL_INDETERMINATE;
             }
             break;
         }
         case '}':
         {
-            consume.nextTok = tok_obj_r_curly;
-            consume.state = next_json_object_state(consume.state);
-            consume.tribool = TRIBOOL_INDETERMINATE;
-            consume.isObjects = false;
+            consume->nextTok = (void *)tok_obj_r_curly;
+            consume->state = next_json_object_state(consume->state);
+            consume->tribool = TRIBOOL_INDETERMINATE;
+            consume->isObjects = false;
             break;
         }
         case ']' :
         {
-            consume.nextTok = tok_obj_r_bracket;
-            consume.state = next_json_object_state(consume.state);
-            consume.tribool = TRIBOOL_INDETERMINATE;
-            consume.isObjects = false;
+            consume->nextTok = (void *)tok_obj_r_bracket;
+            consume->state = next_json_object_state(consume->state);
+            consume->tribool = TRIBOOL_INDETERMINATE;
+            consume->isObjects = false;
             break;
         }
         case '\0':
         case '\r':
         case '\n':
         {
-            consume.tribool = TRIBOOL_TRUE;
-            consume.state = JSON_OBJECT_END;
+            consume->tribool = TRIBOOL_TRUE;
+            consume->state = JSON_OBJECT_END;
             break;
         }
         default:
         {
             if(isalpha(c) || isdigit(c))
             {
-                consume.nextTok = tok_obj_letter;
-                consume.tribool = TRIBOOL_TRUE;
-                if(consume.state == JSON_OBJECT_KEY)
-                    consume.state = JSON_OBJECT_KEY_BEGIN;
-                else if(consume.state == JSON_OBJECT_VALUE)
-                    consume.state = JSON_OBJECT_VALUE_BEGIN;
+                consume->nextTok = (void *)tok_obj_letter;
+                consume->tribool = TRIBOOL_TRUE;
+                if(consume->state == JSON_OBJECT_KEY)
+                    consume->state = JSON_OBJECT_KEY_BEGIN;
+                else if(consume->state == JSON_OBJECT_VALUE)
+                    consume->state = JSON_OBJECT_VALUE_BEGIN;
             }
             else {
-                consume.tribool = TRIBOOL_FALSE;
+                consume->tribool = TRIBOOL_FALSE;
             }
 
 
@@ -192,237 +192,237 @@ JsonConsume tok_obj_dq_mark(const char c, JsonConsume objConsume)
         }
     }
 
-    return consume;
+    return *consume;
 }
 
 // CASE :
-JsonConsume tok_obj_colon(const char c, JsonConsume objConsume)
+JsonConsume tok_obj_colon(const char c, JsonConsume *objConsume)
 {
     debug_message("tok_obj_colon");
 
-    JsonConsume consume = objConsume;
+    JsonConsume *consume = objConsume;
 
     switch (c) {
         case '\"' :
         {
-            consume.nextTok = tok_obj_dq_mark;
+            consume->nextTok = (void *)tok_obj_dq_mark;
 
-            if(consume.isObjects)
+            if(consume->isObjects)
             {
-                consume.tribool = TRIBOOL_TRUE;
+                consume->tribool = TRIBOOL_TRUE;
             }
             else
             {
-                consume.tribool = TRIBOOL_INDETERMINATE;
+                consume->tribool = TRIBOOL_INDETERMINATE;
             }
             break;
         }
         case '{':
         {
-            consume.nextTok = tok_obj_l_curly;
-            consume.isObjects = true;
-            consume.state = next_json_object_state(consume.state);
-            consume.tribool = TRIBOOL_INDETERMINATE;
+            consume->nextTok = (void *)tok_obj_l_curly;
+            consume->isObjects = true;
+            consume->state = next_json_object_state(consume->state);
+            consume->tribool = TRIBOOL_INDETERMINATE;
             break;
         }
         case '[' :
         {
-            consume.nextTok = tok_obj_l_bracket;
-            consume.isObjects = true;
-            consume.state = next_json_object_state(consume.state);
-            consume.tribool = TRIBOOL_INDETERMINATE;
+            consume->nextTok = (void *)tok_obj_l_bracket;
+            consume->isObjects = true;
+            consume->state = next_json_object_state(consume->state);
+            consume->tribool = TRIBOOL_INDETERMINATE;
             break;
         }
         default:
         {
-            consume.tribool = TRIBOOL_FALSE;
+            consume->tribool = TRIBOOL_FALSE;
             break;
         }
     }
 
-    return consume;
+    return *consume;
 }
 
 // CASE ,
-JsonConsume tok_obj_comma(const char c, JsonConsume objConsume)
+JsonConsume tok_obj_comma(const char c, JsonConsume *objConsume)
 {
     debug_message("tok_obj_comma");
 
-    JsonConsume consume = objConsume;
+    JsonConsume *consume = objConsume;
 
     switch (c) {
         case '\"' :
         {
-            consume.nextTok = tok_obj_dq_mark;
-            if(consume.isObjects)
+            consume->nextTok = (void *)tok_obj_dq_mark;
+            if(consume->isObjects)
             {
-                consume.tribool = TRIBOOL_TRUE;
+                consume->tribool = TRIBOOL_TRUE;
             }
             else
             {
-                consume.state = next_json_object_state(consume.state);
-                consume.tribool = TRIBOOL_INDETERMINATE;
+                consume->state = next_json_object_state(consume->state);
+                consume->tribool = TRIBOOL_INDETERMINATE;
             }
             break;
         }
         default:
         {
-            consume.tribool = TRIBOOL_FALSE;
+            consume->tribool = TRIBOOL_FALSE;
             break;
         }
     }
 
-    return consume;
+    return *consume;
 }
 
 // CASE {
-JsonConsume tok_obj_l_curly(const char c, JsonConsume objConsume)
+JsonConsume tok_obj_l_curly(const char c, JsonConsume *objConsume)
 {
     debug_message("tok_obj_l_curly");
 
-    JsonConsume consume = objConsume;
+    JsonConsume *consume = objConsume;
 
     switch (c) {
         case '\"' :
         {
-            consume.nextTok = tok_obj_dq_mark;
-            if(consume.isObjects)
+            consume->nextTok = (void *)tok_obj_dq_mark;
+            if(consume->isObjects)
             {
-                consume.tribool = TRIBOOL_TRUE;
+                consume->tribool = TRIBOOL_TRUE;
             }
             break;
         }
         default:
         {
-            consume.tribool = TRIBOOL_FALSE;
+            consume->tribool = TRIBOOL_FALSE;
             break;
         }
     }
 
-    return consume;
+    return *consume;
 }
 
 // CASE }
-JsonConsume tok_obj_r_curly(const char c, JsonConsume objConsume)
+JsonConsume tok_obj_r_curly(const char c, JsonConsume *objConsume)
 {
     debug_message("tok_obj_r_curly");
 
-    JsonConsume consume = objConsume;
+    JsonConsume *consume = objConsume;
 
     switch (c) {
         case ',' :
         {
-            consume.nextTok = tok_obj_comma;
-            consume.isObjects = false;
-            consume.tribool = TRIBOOL_INDETERMINATE;
-            consume.state = next_json_object_state(consume.state);
+            consume->nextTok = (void *)tok_obj_comma;
+            consume->isObjects = false;
+            consume->tribool = TRIBOOL_INDETERMINATE;
+            consume->state = next_json_object_state(consume->state);
             break;
         }
         case '\0':
         case '\r':
         case '\n':
         {
-            consume.tribool = TRIBOOL_TRUE;
-            consume.state = JSON_OBJECT_INDERERMINATE;
+            consume->tribool = TRIBOOL_TRUE;
+            consume->state = JSON_OBJECT_INDERERMINATE;
             break;
         }
         default:
         {
-            consume.tribool = TRIBOOL_FALSE;
+            consume->tribool = TRIBOOL_FALSE;
             break;
         }
     }
 
-    return consume;
+    return *consume;
 }
 
 //  CASE [
-JsonConsume tok_obj_l_bracket(const char c, JsonConsume objConsume)
+JsonConsume tok_obj_l_bracket(const char c, JsonConsume *objConsume)
 {
     debug_message("tok_obj_l_bracket");
 
-    JsonConsume consume = objConsume;
+    JsonConsume *consume = objConsume;
 
     switch (c) {
         case '\"' :
         {
-            consume.nextTok = tok_obj_dq_mark;
-            if(consume.isObjects)
+            consume->nextTok = (void *)tok_obj_dq_mark;
+            if(consume->isObjects)
             {
-                consume.tribool = TRIBOOL_TRUE;
+                consume->tribool = TRIBOOL_TRUE;
             }
             break;
         }
         default:
         {
-            consume.tribool = TRIBOOL_FALSE;
+            consume->tribool = TRIBOOL_FALSE;
             break;
         }
     }
 
-    return consume;
+    return *consume;
 }
 
 //  CASE ]
-JsonConsume tok_obj_r_bracket(const char c, JsonConsume objConsume)
+JsonConsume tok_obj_r_bracket(const char c, JsonConsume *objConsume)
 {
     debug_message("tok_obj_r_bracket");
 
-    JsonConsume consume = objConsume;
+    JsonConsume *consume = objConsume;
 
     switch (c) {
         case '\0':
         case '\r':
         case '\n':
         {
-            consume.tribool = TRIBOOL_TRUE;
-//             consume.state = JSON_OBJECT_INDERERMINATE;
-            consume.state = JSON_OBJECT_END;
+            consume->tribool = TRIBOOL_TRUE;
+//             consume->state = JSON_OBJECT_INDERERMINATE;
+            consume->state = JSON_OBJECT_END;
             break;
         }
         case ',' :
         {
-            consume.nextTok = tok_obj_comma;
-            consume.isObjects = false;
-            consume.tribool = TRIBOOL_INDETERMINATE;
-            consume.state = next_json_object_state(consume.state);
+            consume->nextTok = (void *)tok_obj_comma;
+            consume->isObjects = false;
+            consume->tribool = TRIBOOL_INDETERMINATE;
+            consume->state = next_json_object_state(consume->state);
             break;
         }
         case '}':
         {
-            consume.nextTok = tok_obj_r_curly;
-            consume.isObjects = false;
-            consume.tribool = TRIBOOL_INDETERMINATE;
-            consume.state = next_json_object_state(consume.state);
+            consume->nextTok = (void *)tok_obj_r_curly;
+            consume->isObjects = false;
+            consume->tribool = TRIBOOL_INDETERMINATE;
+            consume->state = next_json_object_state(consume->state);
             break;
         }
         default:
         {
-            consume.tribool = TRIBOOL_FALSE;
+            consume->tribool = TRIBOOL_FALSE;
             break;
         }
     }
 
-    return consume;
+    return *consume;
 }
 
 // CASE A -> Z, 0 -> 1
-JsonConsume tok_obj_letter(const char c, JsonConsume objConsume)
+JsonConsume tok_obj_letter(const char c, JsonConsume *objConsume)
 {
     debug_message("tok_obj_letter");
-    JsonConsume consume = objConsume;
+    JsonConsume *consume = objConsume;
 
     switch (c) {
         case '\"' :
         {
-            consume.nextTok = tok_obj_dq_mark;
-            if(consume.isObjects)
+            consume->nextTok = (void *)tok_obj_dq_mark;
+            if(consume->isObjects)
             {
-                consume.tribool = TRIBOOL_TRUE;
+                consume->tribool = TRIBOOL_TRUE;
             }
             else
             {
-                consume.state = next_json_object_state(consume.state);
+                consume->state = next_json_object_state(consume->state);
             }
             break;
         }
@@ -430,17 +430,17 @@ JsonConsume tok_obj_letter(const char c, JsonConsume objConsume)
         {
             if (isalpha(c) || isdigit(c))
             {
-                consume.nextTok = tok_obj_letter;
-                consume.tribool = TRIBOOL_TRUE;
+                consume->nextTok = (void *)tok_obj_letter;
+                consume->tribool = TRIBOOL_TRUE;
             }
             else
-                consume.tribool = TRIBOOL_FALSE;
+                consume->tribool = TRIBOOL_FALSE;
 
             break;
         }
     }
 
-    return consume;
+    return *consume;
 }
 
 JsonObjectState next_json_object_state(JsonObjectState objState)

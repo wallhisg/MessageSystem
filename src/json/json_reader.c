@@ -10,7 +10,60 @@ extern JsonConsume tok_obj_r_curly(const char c, JsonConsume objConsume);
 extern JsonConsume tok_obj_l_bracket(const char c, JsonConsume objConsume);
 extern JsonConsume tok_obj_r_bracket(const char c, JsonConsume objConsume);
 
+void read_key_value(Buffer *inBuff)
+{
+    printf("Buffer input: %s\r\n", inBuff->buffer);
+    JsonConsume consume;
+    json_consume_init(&consume);
+    consume.nextTok = (void*)tok_obj_letter_start;
+    consume.state = JSON_OBJECT_NEW;
+    
+    read_key(inBuff, &consume);
+    read_value(inBuff, &consume);
+    read_key(inBuff, &consume);
+    read_value(inBuff, &consume);
+}
 
+void read_key(Buffer *inBuff, JsonConsume *objConsume)
+{
+    char byte = ' ';
+    JsonConsume consume;
+    int i = 0;
+    for(i = 0; i < inBuff->size; ++i)
+    {
+        byte = buffer_read_one_byte(inBuff);
+        consume = consume_object(byte, objConsume);
+        
+        if ((consume.tribool == TRIBOOL_TRUE) && (consume.state == JSON_OBJECT_KEY_BEGIN))
+        {
+            printf("%c", byte);
+        }
+        if(consume.state == JSON_OBJECT_VALUE)
+            break;
+    }
+    printf("\r\n");
+    printf("Buffer remain: %s\r\n", inBuff->buffer);
+}
+void read_value(Buffer *inBuff, JsonConsume *objConsume)
+{
+    char byte = ' ';
+    JsonConsume consume;
+    int i = 0;
+    for(i = 0; i < inBuff->size; ++i)
+    {
+        byte = buffer_read_one_byte(inBuff);
+        consume = consume_object(byte, objConsume);
+        
+        if ((consume.tribool == TRIBOOL_TRUE) && (consume.state == JSON_OBJECT_VALUE_BEGIN))
+        {
+            printf("%c", byte);
+        }
+        if(consume.state == JSON_OBJECT_VALUE_END)
+            break;
+    }
+    printf("\r\n");
+    printf("Buffer remain: %s\r\n", inBuff->buffer);
+}
 
 char json_object_read_description(Buffer *inBuff)
 {
@@ -35,24 +88,24 @@ char json_read_description_key(Buffer *inBuff, void *tokStart, JsonObjectState s
     consume.state = JSON_OBJECT_NEW;
     
     char desKey = 'a';
-    char byte = ' ';
+//     char byte = ' ';
     
-    int i = 0;
-    for(i = 0; i < inBuff->size; ++i)
-    {
-//         printf("%c\r\n", byte);
-//         printf("consume.state: %d\r\n", consume.state);
-        byte = buffer_read_one_byte(inBuff);
-        consume = consume_object(byte, consume);
-        if( consume.state == JSON_OBJECT_KEY_BEGIN)
-        {
-            desKey = byte;
-//             printf("%c\r\n", description);
+//     int i = 0;
+//     for(i = 0; i < inBuff->size; ++i)
+//     {
+// //         printf("%c\r\n", byte);
+// //         printf("consume.state: %d\r\n", consume.state);
+//         byte = buffer_read_one_byte(inBuff);
+//         consume = consume_object(byte, consume);
+//         if( consume.state == JSON_OBJECT_KEY_BEGIN)
+//         {
+//             desKey = byte;
+// //             printf("%c\r\n", description);
+// //             break;
+//         }
+//         if(consume.state == stateEnd)
 //             break;
-        }
-        if(consume.state == stateEnd)
-            break;
-    }
+//     }
     printf("description key: %c\r\n", desKey );
     printf("Buffer remain: %s\r\n", inBuff->buffer);
     return desKey;
@@ -69,24 +122,24 @@ char json_read_description_value(Buffer *inBuff, void *tokStart, JsonObjectState
     consume.state = JSON_OBJECT_NEW;
     
     char desValue = 'a';
-    char byte = ' ';
+//     char byte = ' ';
     
-    int i = 0;
-    for(i = 0; i < inBuff->size; ++i)
-    {
-//         printf("%c\r\n", byte);
-//         printf("consume.state: %d\r\n", consume.state);
-        byte = buffer_read_one_byte(inBuff);
-        consume = consume_object(byte, consume);
-        if( consume.state == JSON_OBJECT_KEY_BEGIN)
-        {
-            desValue = byte;
-//             printf("%c\r\n", description);
+//     int i = 0;
+//     for(i = 0; i < inBuff->size; ++i)
+//     {
+// //         printf("%c\r\n", byte);
+// //         printf("consume.state: %d\r\n", consume.state);
+//         byte = buffer_read_one_byte(inBuff);
+//         consume = consume_object(byte, consume);
+//         if( consume.state == JSON_OBJECT_KEY_BEGIN)
+//         {
+//             desValue = byte;
+// //             printf("%c\r\n", description);
+// //             break;
+//         }
+//         if(consume.state == stateEnd)
 //             break;
-        }
-        if(consume.state == stateEnd)
-            break;
-    }
+//     }
     printf("description value: %c\r\n", desValue);
     printf("Buffer remain: %s\r\n", inBuff->buffer);
     return desValue;

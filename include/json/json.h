@@ -93,7 +93,7 @@ typedef struct JsonConsume{
     uint8_t tokCounter;
     TriBool tribool;
     JsonType type;
-    struct JsonConsume (*nextTok)(const char, struct JsonConsume);
+    struct JsonConsume (*nextTok)(const char, struct JsonConsume *);
 } JsonConsume;
 
 void json_init();

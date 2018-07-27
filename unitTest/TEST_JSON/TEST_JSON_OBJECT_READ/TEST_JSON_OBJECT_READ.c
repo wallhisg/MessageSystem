@@ -49,12 +49,13 @@ void TEST_JSON_OBJECT_READ(char *bytesWrite)
         Buffer *buff = get_json_buffer();
 //         if(json_object_read_description(buff))
         {
-            json_object_read_description(buff);
-            json_object_read_description_value(buff);
-            json_object_read_description(buff);
-            json_object_read_description_value(buff);
-            json_object_read_description(buff);
-            json_object_read_description_value(buff);
+            read_key_value(buff);
+//             json_object_read_description(buff);
+//             json_object_read_description_value(buff);
+//             json_object_read_description(buff);
+//             json_object_read_description_value(buff);
+//             json_object_read_description(buff);
+//             json_object_read_description_value(buff);
 /*            json_object_read_description(buff);
             json_object_read_description_value(buff); */           
 
@@ -64,10 +65,15 @@ void TEST_JSON_OBJECT_READ(char *bytesWrite)
 //             error("PARSER OBJECT FALSE\r\n");
         }
     }   
-    else
+    else if(jsonType == JSON_TYPE_ARRAY)
     {
-        error("PARSER FALSE\r\n");
+                printf("Json type : %d\r\n", jsonType);
+        Buffer *buff = get_json_buffer();
+//         if(json_object_read_description(buff))
+            read_key_value(buff);
     }
+    else
+        error("PARSER FALSE\r\n");
 }
 
 int main()
@@ -79,10 +85,12 @@ int main()
     // init values to write
 //     char *obj1 = "{\"d\":\"1\",\"b\":\"2\"}\r\n";
 //     TEST_JSON_OBJECT_READ(obj1);
-        system_init();
-    json_init();
-    char *obj2 = "{\"a\":{\"X\":\"1\",\"Y\":\"1\"},\"b\":{\"Z\":\"1\"}}\r\n";
-    TEST_JSON_OBJECT_READ(obj2);
+
+//     char *obj2 = "{\"A\":{\"XX\":\"12\",\"YY\":\"12\"},\"V\":{\"Z\":\"12\"}}\r\n";
+//     TEST_JSON_OBJECT_READ(obj2);
+    
+    char *bytesWrite2 = "{\"a\":[\"X\",\"Y\",\"Z\"],\"b\":\"1\"}\r\n";
+    TEST_JSON_OBJECT_READ(bytesWrite2);
 // 
 //     char *obj3 = "{\"a\":{\"X\":\"1\",\"Y\":\"1\"},\"b\":\"1\"}\r\n";
 //     TEST_JSON_OBJECT_READ(obj3);

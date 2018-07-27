@@ -87,7 +87,7 @@ int main()
     char *obj1 = "{\"aA\":\"1\",\"b\":\"2\"}\r\n";
     TEST_JSON_OBJECT(obj1);
 
-    char *obj2 = "{\"aB\":{\"XX\":\"12\",\"YY\":\"12\"},\"bV\":{\"Z\":\"12\"}}\r\n";
+    char *obj2 = "{\"A\":{\"XX\":\"12\",\"YY\":\"12\"},\"V\":{\"Z\":\"12\"}}\r\n";
     TEST_JSON_OBJECT(obj2);
 
 //    char *obj3 = "{\"aB\":{\"XX\":\"1\",\"YY\":\"1\"},\"bV\":\"1\"}\r\n";
