@@ -43,18 +43,9 @@ void TEST_JSON_STRING()
         if(jsonType == JSON_TYPE_STRING)
         {
             // print out json_parser result
-            printf("jsonSchema type: %d\r\n", jsonType);
-//             printf("jsonSchema idx: %d\r\n", jsonSchema->idx);
-//             printf("jsonSchema buff in HEX: \r\n");
-
-//             int j = jsonSchema->idx;
-//             for(i = 0; i < j; i++)
-//             {
-//                 printf(" %x", jsonSchema->buff[i]);
-//             }
-//             jsonSchema->buff[jsonSchema->idx] = '\0';
-//             printf("\r\n");
-//             printf("string out: %s\r\n", jsonSchema->buff);
+            printf("Json type: %d\r\n", jsonType);
+            Buffer *buff = get_json_buffer();
+            printf("json string: %s\r\n", buff->buffer);
         }
         else
         {

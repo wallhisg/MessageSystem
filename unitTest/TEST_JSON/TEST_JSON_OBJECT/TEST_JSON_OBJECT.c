@@ -71,26 +71,27 @@ int main()
 {
     system_init();
     json_init();
-    // TEST FAILE
-    // init values to write
-    char *obj10 = "{\"a\":\"1\",\"bc\"1:\"2\"}\r\n";
-    TEST_JSON_OBJECT(obj10);
+//    // TEST FAILE
+//    // init values to write
+//    char *obj10 = "{\"a\":\"1\",\"bc\"1:\"2\"}\r\n";
+//    TEST_JSON_OBJECT(obj10);
 
-    char *obj20 = "{\"a\":1{\"X\":\"1\",\"Y\":\"1\"},\"b\":{\"Z\":\"1\"}}\r\n";
-    TEST_JSON_OBJECT(obj20);
+//    char *obj20 = "{\"a\":1{\"X\":\"1\",\"Y\":\"1\"},\"bV\":{\"Z\":\"1\"}}\r\n";
+//    TEST_JSON_OBJECT(obj20);
 
-    char *obj30 = "{\"a\":{\"X\":\"1\",\"Y\":\"1\"},1\"b\":\"1\"}\r\n";
-    TEST_JSON_OBJECT(obj30);
+//    char *obj30 = "{\"a\":{\"X\":\"1\",\"Y\":\"1\"},1\"bV\":\"12\"}\r\n";
+//    TEST_JSON_OBJECT(obj30);
 
     // TEST TRUE
     // init values to write
-    char *obj1 = "{\"a\":\"1\",\"b\":\"2\"}\r\n";
+    char *obj1 = "{\"aA\":\"1\",\"b\":\"2\"}\r\n";
     TEST_JSON_OBJECT(obj1);
 
-    char *obj2 = "{\"a\":{\"X\":\"1\",\"Y\":\"1\"},\"b\":{\"Z\":\"1\"}}\r\n";
+    char *obj2 = "{\"aB\":{\"XX\":\"12\",\"YY\":\"12\"},\"bV\":{\"Z\":\"12\"}}\r\n";
     TEST_JSON_OBJECT(obj2);
 
-    char *obj3 = "{\"a\":{\"X\":\"1\",\"Y\":\"1\"},\"b\":\"1\"}\r\n";
+//    char *obj3 = "{\"aB\":{\"XX\":\"1\",\"YY\":\"1\"},\"bV\":\"1\"}\r\n";
+    char *obj3 = "{\"d\":\"1\",\"b\":\"2\"}\r\n";
     TEST_JSON_OBJECT(obj3);
 
     

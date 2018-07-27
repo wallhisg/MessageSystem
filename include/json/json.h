@@ -38,13 +38,15 @@ typedef enum {
 } JsonType;
 
 typedef enum {
-    JSON_OBJECT_INDERERMINATE,
-    JSON_OBJECT_NEW,
-    JSON_OBJECT_KEY,
-    JSON_OBJECT_KEY_NEW,
-    JSON_OBJECT_KEY_END,
-    JSON_OBJECT_VALUE,
-    JSON_OBJECT_END
+    JSON_OBJECT_INDERERMINATE,  // 0
+    JSON_OBJECT_NEW,            // 1
+    JSON_OBJECT_KEY,            // 2
+    JSON_OBJECT_KEY_BEGIN,      // 3
+    JSON_OBJECT_KEY_END,        // 4
+    JSON_OBJECT_VALUE,          // 5
+    JSON_OBJECT_VALUE_BEGIN,    // 6
+    JSON_OBJECT_VALUE_END,      // 7
+    JSON_OBJECT_END             // 8
 } JsonObjectState;
 
 // six struct tokens

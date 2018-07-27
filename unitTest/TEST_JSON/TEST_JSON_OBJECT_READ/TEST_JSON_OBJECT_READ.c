@@ -4,6 +4,16 @@
 #include <json/json_parser_object.h>
 #include <json/json_reader.h>
 
+extern JsonConsume tok_obj_letter_start(const char c, JsonConsume objConsume);
+extern JsonConsume tok_obj_dq_mark(const char c, JsonConsume objConsume);
+extern JsonConsume tok_obj_colon(const char c, JsonConsume objConsume);
+extern JsonConsume tok_obj_comma(const char c, JsonConsume objConsume);
+extern JsonConsume tok_obj_letter(const char c, JsonConsume objConsume);
+extern JsonConsume tok_obj_l_curly(const char c, JsonConsume objConsume);
+extern JsonConsume tok_obj_r_curly(const char c, JsonConsume objConsume);
+extern JsonConsume tok_obj_l_bracket(const char c, JsonConsume objConsume);
+extern JsonConsume tok_obj_r_bracket(const char c, JsonConsume objConsume);
+
 #define MAX_NO_OF_BUFFER    64
 static char buffer[MAX_NO_OF_BUFFER];
 volatile uint16_t bytesWritten = 0;
@@ -37,13 +47,21 @@ void TEST_JSON_OBJECT_READ(char *bytesWrite)
     {
         printf("Json type : %d\r\n", jsonType);
         Buffer *buff = get_json_buffer();
-        if(json_object_read_description(buff))
+//         if(json_object_read_description(buff))
         {
+            json_object_read_description(buff);
+            json_object_read_description_value(buff);
+            json_object_read_description(buff);
+            json_object_read_description_value(buff);
+            json_object_read_description(buff);
+            json_object_read_description_value(buff);
+/*            json_object_read_description(buff);
+            json_object_read_description_value(buff); */           
 
         }
-        else
+//         else
         {
-            error("PARSER OBJECT FALSE\r\n");
+//             error("PARSER OBJECT FALSE\r\n");
         }
     }   
     else
@@ -59,11 +77,12 @@ int main()
 
 
     // init values to write
-    char *obj1 = "{\"d\":\"1\",\"b\":\"2\"}\r\n";
-    TEST_JSON_OBJECT_READ(obj1);
-    
-//     char *obj2 = "{\"a\":{\"X\":\"1\",\"Y\":\"1\"},\"b\":{\"Z\":\"1\"}}\r\n";
-//     TEST_JSON_OBJECT_READ(obj2);
+//     char *obj1 = "{\"d\":\"1\",\"b\":\"2\"}\r\n";
+//     TEST_JSON_OBJECT_READ(obj1);
+        system_init();
+    json_init();
+    char *obj2 = "{\"a\":{\"X\":\"1\",\"Y\":\"1\"},\"b\":{\"Z\":\"1\"}}\r\n";
+    TEST_JSON_OBJECT_READ(obj2);
 // 
 //     char *obj3 = "{\"a\":{\"X\":\"1\",\"Y\":\"1\"},\"b\":\"1\"}\r\n";
 //     TEST_JSON_OBJECT_READ(obj3);

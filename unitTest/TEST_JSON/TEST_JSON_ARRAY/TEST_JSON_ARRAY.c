@@ -66,6 +66,7 @@ void TEST_JSON_ARRAY(char *bytesWrite)
         }
         else
         {
+            consume_buffer(buff, LF);
             error("PARSER FALSE\r\n");
         }
     }    
@@ -77,10 +78,9 @@ int main()
     json_init();
 //  init value to write
     char *bytesWrite1 = "{\"a\":[\"X\",\"Y\",\"Z\"],\"b\":[\"W\",\"X\",\"H\"]}\r\n";
+//    char *bytesWrite1 = "{\"a\":[\"X\",\"Y\"]}\r\n";
     TEST_JSON_ARRAY(bytesWrite1);
     printf("\r\n");
-//     system_init();
-//     json_init();
     char *bytesWrite2 = "{\"a\":[\"X\",\"Y\",\"Z\"],\"b\":\"1\"}\r\n";
     TEST_JSON_ARRAY(bytesWrite2);
 //    char *bytesWrite = "{\"enum\":[\"residential\",\"business\"]}\r\n";

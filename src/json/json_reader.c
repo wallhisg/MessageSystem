@@ -10,32 +10,85 @@ extern JsonConsume tok_obj_r_curly(const char c, JsonConsume objConsume);
 extern JsonConsume tok_obj_l_bracket(const char c, JsonConsume objConsume);
 extern JsonConsume tok_obj_r_bracket(const char c, JsonConsume objConsume);
 
+
+
 char json_object_read_description(Buffer *inBuff)
 {
-    return json_read_description(inBuff, tok_obj_letter_start);
+//     return json_read_description_key(inBuff, tok_obj_letter_start, JSON_OBJECT_VALUE);
+    return json_read_description_key(inBuff, tok_obj_letter_start, JSON_OBJECT_VALUE);
 }
 
-char json_read_description(Buffer* inBuff, void* tokStart)
+char json_object_read_description_value(Buffer *inBuff)
+{
+//     return json_read_description_value(inBuff, tok_obj_letter_start, JSON_OBJECT_VALUE);
+    return json_read_description_value(inBuff, tok_obj_letter_start, JSON_OBJECT_KEY);
+}
+
+char json_read_description_key(Buffer *inBuff, void *tokStart, JsonObjectState stateEnd)
 {
     printf("json_obJect_read_description\r\n");
-    JsonConsume objConsume;
-    json_consume_init(&objConsume);
-    objConsume.nextTok = tokStart;
-    char description = 'a';
+    printf("Buffer input: %s\r\n", inBuff->buffer);
+    JsonConsume consume;
+    json_consume_init(&consume);
+    
+    consume.nextTok = tokStart;
+    consume.state = JSON_OBJECT_NEW;
+    
+    char desKey = 'a';
     char byte = ' ';
-    byte = buffer_read_one_byte(inBuff);
     
-    
-    if(objConsume.state == JSON_OBJECT_NEW)
+    int i = 0;
+    for(i = 0; i < inBuff->size; ++i)
     {
-        description = byte;
+//         printf("%c\r\n", byte);
+//         printf("consume.state: %d\r\n", consume.state);
+        byte = buffer_read_one_byte(inBuff);
+        consume = consume_object(byte, consume);
+        if( consume.state == JSON_OBJECT_KEY_BEGIN)
+        {
+            desKey = byte;
+//             printf("%c\r\n", description);
+//             break;
+        }
+        if(consume.state == stateEnd)
+            break;
     }
+    printf("description key: %c\r\n", desKey );
+    printf("Buffer remain: %s\r\n", inBuff->buffer);
+    return desKey;
+}
+
+char json_read_description_value(Buffer *inBuff, void *tokStart, JsonObjectState stateEnd)
+{
+    printf("json_obJect_read_description\r\n");
+    printf("Buffer input: %s\r\n", inBuff->buffer);
+    JsonConsume consume;
+    json_consume_init(&consume);
     
-    objConsume.nextTok(byte, objConsume);
+    consume.nextTok = tokStart;
+    consume.state = JSON_OBJECT_NEW;
     
-//     if(objConsume.state == )
+    char desValue = 'a';
+    char byte = ' ';
     
-    printf("%c\r\n", description);
-    return description;
+    int i = 0;
+    for(i = 0; i < inBuff->size; ++i)
+    {
+//         printf("%c\r\n", byte);
+//         printf("consume.state: %d\r\n", consume.state);
+        byte = buffer_read_one_byte(inBuff);
+        consume = consume_object(byte, consume);
+        if( consume.state == JSON_OBJECT_KEY_BEGIN)
+        {
+            desValue = byte;
+//             printf("%c\r\n", description);
+//             break;
+        }
+        if(consume.state == stateEnd)
+            break;
+    }
+    printf("description value: %c\r\n", desValue);
+    printf("Buffer remain: %s\r\n", inBuff->buffer);
+    return desValue;
 
 }

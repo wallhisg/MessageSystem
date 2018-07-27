@@ -67,7 +67,7 @@ bool is_tok_letter(const char c)
 bool insert_json_object(JsonValue keyValue)
 {
     bool flag = false;
-//    printf("insert_json_object\r\n");
+   printf("insert_json_object\r\n");
 //    printf("Key: %s\r\n", keyValue.key);
 //    printf("val: %s\r\n", keyValue.value);
 
